@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 
 import { post } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
@@ -7,6 +8,7 @@ export default function Form() {
   const [values, handleChange] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const history = useHistory();
 
   const handleClick = event => {
     // let form submission handle required fields
@@ -30,6 +32,8 @@ export default function Form() {
 
       const user = await response.json();
       // do something with user
+
+      history.push('/portal');
     })();
   };
 
