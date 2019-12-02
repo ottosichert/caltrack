@@ -1,0 +1,4 @@
+# backend
+*.pyc
+__pycache__
+instance/
