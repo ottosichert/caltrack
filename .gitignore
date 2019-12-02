@@ -2,3 +2,9 @@
 *.pyc
 __pycache__
 instance/
+
+# frontend
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
