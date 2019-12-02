@@ -9,6 +9,11 @@ export default function Form() {
   const [error, setError] = useState("");
 
   const handleClick = event => {
+    // let form submission handle required fields
+    if (!values.username || !values.password) {
+      return;
+    }
+
     event.preventDefault();
     setLoading(true);
     setError("");
@@ -17,11 +22,14 @@ export default function Form() {
     const display = event.target.textContent;
 
     (async () => {
-      const response = await post(endpoint, { body: JSON.stringify(values)});
-      if (!response.ok) {
-        setError(`Unable to ${display}! Please try again.`)
-      }
+      const response = await post(endpoint, { body: JSON.stringify(values) });
       setLoading(false);
+      if (!response.ok) {
+        return setError(`Unable to ${display}! Please try again.`)
+      }
+
+      const user = await response.json();
+      // do something with user
     })();
   };
 
@@ -36,7 +44,7 @@ export default function Form() {
         <button
           className="pure-button pure-button-primary pure-input-1-2"
           type="submit"
-          formAction="/auth/login"
+          formAction="/api/auth/login"
           onClick={handleClick}
           disabled={loading}
         >
@@ -45,7 +53,7 @@ export default function Form() {
         <button
           className="pure-button pure-input-1-2"
           type="submit"
-          formAction="/auth/register"
+          formAction="/api/auth/register"
           onClick={handleClick}
           disabled={loading}
         >
