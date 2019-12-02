@@ -2,9 +2,11 @@
 <html>
   <head>
     <title>CalTrack</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='caltrack.css')}}">
   </head>
   <body>
-    <div id="app" />
+    <div id="app" class="app" />
     {% block body %}{% endblock %}
   </body>
 </html>

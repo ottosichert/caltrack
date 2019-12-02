@@ -20,7 +20,7 @@ backend/ $ mkvirtualenv caltrack -a . -p /usr/bin/python3.6 -r requirements.txt
 
 ### Frontend
 
-Code is located at `frontend/` and dependencies are in `frontend/package.json`. You can use `yarn` (https://yarnpkg.com/) to install dependencies. `node` version has to be at least `10`.
+Code is located at `frontend/` and dependencies are in `frontend/package.json`. You can use `yarn` (https://yarnpkg.com/) to install dependencies. `node` version has to be at least `10`. For styling, PureCSS (https://purecss.io/) is used.
 
 ```
 frontend/ $ yarn
