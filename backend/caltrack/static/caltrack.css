@@ -1,9 +1,15 @@
-html, body {
+html,
+body,
+.app,
+.container {
   height: 100%;
+}
+
+body {
   background: linear-gradient(90deg, rgba(247,246,255,1) 0%, rgba(242,253,255,1) 100%);
 }
 
-.app {
+.container {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -24,4 +30,15 @@ html, body {
 .error {
   text-align: center;
   color: #f00;
+}
+
+.menu {
+  border-bottom: 1px solid #bbb;
+  background-color: #00000008;
+}
+
+/* allow pure-menu-selected on <a> element itself to support <NavRouter> */
+.pure-menu-selected.pure-menu-link,
+.pure-menu-selected.pure-menu-link:visited {
+    color: #000;
 }

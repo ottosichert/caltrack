@@ -38,34 +38,38 @@ export default function Form() {
   };
 
   return (
-    <form className="pure-form form" method="post">
-      <fieldset className="pure-group" disabled={loading}>
-        <input className="pure-input-1" name="username" required placeholder="Username" onChange={handleChange} />
-        <input className="pure-input-1" name="password" required placeholder="Password" onChange={handleChange} type="password" />
-      </fieldset>
+    <div className="container">
+      <h1 className="title">CalTrack</h1>
 
-      <div className="pure-button-group">
-        <button
-          className="pure-button pure-button-primary pure-input-1-2"
-          type="submit"
-          formAction="/api/auth/login"
-          onClick={handleClick}
-          disabled={loading}
-        >
-          Login
-        </button>
-        <button
-          className="pure-button pure-input-1-2"
-          type="submit"
-          formAction="/api/auth/register"
-          onClick={handleClick}
-          disabled={loading}
-        >
-          Register
-        </button>
-      </div>
+      <form className="pure-form form" method="post">
+        <fieldset className="pure-group" disabled={loading}>
+          <input className="pure-input-1" name="username" required placeholder="Username" onChange={handleChange} />
+          <input className="pure-input-1" name="password" required placeholder="Password" onChange={handleChange} type="password" />
+        </fieldset>
 
-      <span className="pure-form-message error">{error || "\u00a0"}</span>
-    </form>
+        <div className="pure-button-group">
+          <button
+            className="pure-button pure-button-primary pure-input-1-2"
+            type="submit"
+            formAction="/api/auth/login"
+            onClick={handleClick}
+            disabled={loading}
+          >
+            Login
+          </button>
+          <button
+            className="pure-button pure-input-1-2"
+            type="submit"
+            formAction="/api/auth/register"
+            onClick={handleClick}
+            disabled={loading}
+          >
+            Register
+          </button>
+        </div>
+
+        <span className="pure-form-message error">{error || "\u00a0"}</span>
+      </form>
+    </div>
   );
 }
