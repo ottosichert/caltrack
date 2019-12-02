@@ -14,6 +14,6 @@ def create_app(config=None):
 
     @app.route('/')
     def index():
-        return render_template('index.html')
+        return render_template(f'{os.environ["FLASK_ENV"]}.html')
 
     return app

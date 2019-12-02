@@ -8,10 +8,10 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "BROWSER=none FORCE_COLOR=yes react-app-rewired start | cat",
+    "build": "FORCE_COLOR=yes react-app-rewired build | cat",
+    "test": "FORCE_COLOR=yes react-app-rewired test | cat",
+    "eject": "FORCE_COLOR=yes react-app-rewired eject | cat"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -27,5 +27,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-rewire-disable-chunks": "^0.0.1",
+    "react-app-rewired": "^2.1.5"
   }
 }
