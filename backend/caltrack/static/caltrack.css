@@ -38,7 +38,7 @@ body {
 }
 
 .table {
-  margin: 0 auto;
+  margin: 0 auto 1rem;
 }
 
 /* allow pure-menu-selected on <a> element itself to support <NavRouter> */
