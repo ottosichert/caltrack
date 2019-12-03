@@ -1,4 +1,5 @@
 import functools
+import sys
 
 from flask import current_app, g, session
 from flask_restful import Resource, abort, fields, marshal_with, reqparse
@@ -24,6 +25,19 @@ def login_required(func):
             return abort(403)
         return func(*args, **kwargs)
     return wrapped_func
+
+
+def roles_required(*roles):
+    def wrapper(func):
+        @functools.wraps(func)
+        def wrapped_func(*args, **kwargs):
+            for role in roles:
+                if role not in g.user.roles:
+                    current_app.logger.info(f'Unauthorized access attempt')
+                    return abort(403)
+            return func(*args, **kwargs)
+        return wrapped_func
+    return wrapper
 
 
 @current_app.before_request
@@ -85,4 +99,4 @@ api.add_resource(
     '/auth/<any("register","login","logout"):action>',
 )
 
-current_app.extensions['login_required'] = login_required
+current_app.extensions['auth'] = sys.modules[__name__]

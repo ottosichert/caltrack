@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 db = current_app.extensions['db']
 models = current_app.extensions['models']
 api = current_app.extensions['api']
-login_required = current_app.extensions['login_required']
+auth = current_app.extensions['auth']
 
 profile_fields = {
     'old_password': fields.String,
@@ -21,12 +21,12 @@ profile_parser.add_argument('daily_calories', type=int, required=True)
 
 class Profile(Resource):
     @marshal_with(profile_fields)
-    @login_required
+    @auth.login_required
     def get(self):
         return g.user
 
     @marshal_with(profile_fields)
-    @login_required
+    @auth.login_required
     def patch(self):
         args = profile_parser.parse_args(strict=True)
 
