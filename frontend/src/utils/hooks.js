@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export function useInput(defaultValues = {}) {
   const [values, setValues] = useState(defaultValues);
-  const handleChange = event => {
+  const handleChange = useCallback(event => {
     setValues({
       ...values,
       [event.currentTarget.name]: event.currentTarget.value,
     });
-  };
-  return [values, handleChange];
+  }, [values, setValues]);
+  return [values, handleChange, setValues];
 }

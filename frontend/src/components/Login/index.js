@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { post } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
-export default function Form() {
+export default function Login() {
   const [values, handleChange] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

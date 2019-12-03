@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Switch, Route } from "react-router-dom";
 
-import Form from '../Form';
+import Login from '../Login';
 import Portal from '../Portal';
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
           <Portal />
         </Route>
         <Route path="/">
-          <Form />
+          <Login />
         </Route>
       </Switch>
     </HashRouter>

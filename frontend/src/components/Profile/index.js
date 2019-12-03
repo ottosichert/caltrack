@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 
-import { patch } from '../../utils/functions';
+import { get, patch } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
 export default function Profile() {
-  const [values, handleChange] = useInput();
-  const [loading, setLoading] = useState(false);
+  const [values, handleChange, setValues] = useInput();
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const history = useHistory();
 
-  const changingPassword = Boolean(values.old_password || values.new_password);
+  const endpoint = "/api/profile";
+  useEffect(() => {
+    (async () => {
+      const response = await get(endpoint);
+      if (!response.ok) {
+        return setError('Error while loading profile! Please reload page.');
+      }
+      const profile = await response.json();
+      setValues(profile);
+      setLoading(false);
+    })();
+  }, [setValues]);
 
   const handleSubmit = event => {
     event.preventDefault();
     setLoading(true);
     setError("");
-    const endpoint = event.target.action;
 
     (async () => {
       const response = await patch(endpoint, { body: JSON.stringify(values) });
@@ -28,9 +38,11 @@ export default function Profile() {
     })();
   };
 
+  const changingPassword = Boolean(values.old_password || values.new_password);
+
   return (
-    <form className="pure-form form" method="post" action="/api/profile" onSubmit={handleSubmit}>
-      <fieldset className="pure-group">
+    <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
+      <fieldset className="pure-group" disabled={loading}>
         <legend>Change password</legend>
 
         <input
@@ -51,10 +63,17 @@ export default function Profile() {
         />
       </fieldset>
 
-      <fieldset className="pure-group">
+      <fieldset className="pure-group" disabled={loading}>
         <legend>Calories per day</legend>
 
-        <input className="pure-input-1" name="daily_calories" onChange={handleChange} type="number" min={0} />
+        <input
+          className="pure-input-1"
+          name="daily_calories"
+          onChange={handleChange}
+          type="number"
+          min={0}
+          value={values.daily_calories || ""}
+        />
       </fieldset>
 
       <div className="pure-button-group">

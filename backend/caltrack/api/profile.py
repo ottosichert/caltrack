@@ -22,6 +22,11 @@ profile_parser.add_argument('daily_calories', type=int, required=True)
 class Profile(Resource):
     @marshal_with(profile_fields)
     @login_required
+    def get(self):
+        return g.user
+
+    @marshal_with(profile_fields)
+    @login_required
     def patch(self):
         args = profile_parser.parse_args(strict=True)
 
@@ -39,8 +44,9 @@ class Profile(Resource):
 
             g.user.password_hash = generate_password_hash(args['new_password'])
 
+        g.user.daily_calories = args['daily_calories']
         db.session.commit()
-        return g.user
+        return self.get()
 
 
 api.add_resource(Profile, '/profile')
