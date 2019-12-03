@@ -26,6 +26,16 @@ def login_required(func):
     return wrapped_func
 
 
+@current_app.before_request
+def load_logged_in_user():
+    user_id = session.get(Authentication.USER_SESSION_KEY)
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = models.User.query.get(user_id)
+
+
 class Authentication(Resource):
     USER_SESSION_KEY = 'user_id'
 
@@ -75,12 +85,4 @@ api.add_resource(
     '/auth/<any("register","login","logout"):action>',
 )
 
-
-@current_app.before_request
-def load_logged_in_user():
-    user_id = session.get(Authentication.USER_SESSION_KEY)
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = models.User.query.get(user_id)
+current_app.extensions['login_required'] = login_required

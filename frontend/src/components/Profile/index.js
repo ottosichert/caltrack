@@ -10,6 +10,8 @@ export default function Profile() {
   const [error, setError] = useState("");
   const history = useHistory();
 
+  const changingPassword = Boolean(values.old_password || values.new_password);
+
   const handleSubmit = event => {
     event.preventDefault();
     setLoading(true);
@@ -31,8 +33,22 @@ export default function Profile() {
       <fieldset className="pure-group">
         <legend>Change password</legend>
 
-        <input className="pure-input-1" name="old_password" placeholder="Old password" onChange={handleChange} type="password" />
-        <input className="pure-input-1" name="new_password" placeholder="New password" onChange={handleChange} type="password" />
+        <input
+          className="pure-input-1"
+          name="old_password"
+          placeholder="Old password"
+          onChange={handleChange}
+          type="password"
+          required={changingPassword}
+        />
+        <input
+          className="pure-input-1"
+          name="new_password"
+          placeholder="New password"
+          onChange={handleChange}
+          type="password"
+          required={changingPassword}
+        />
       </fieldset>
 
       <fieldset className="pure-group">
