@@ -19,7 +19,10 @@ export default function Menu() {
       <span className="pure-menu-heading">CalTrack</span>
       <ul className="pure-menu-list">
         <li className="pure-menu-item">
-          <NavLink to="/portal" className="pure-menu-link" activeClassName="pure-menu-selected">Dashboard</NavLink>
+          <NavLink to="/portal" className="pure-menu-link" activeClassName="pure-menu-selected" exact>Dashboard</NavLink>
+        </li>
+        <li className="pure-menu-item">
+          <NavLink to="/portal/profile" className="pure-menu-link" activeClassName="pure-menu-selected">Profile</NavLink>
         </li>
         <li className="pure-menu-item">
           <Link to="" className="pure-menu-link" onClick={handleClick}>Logout</Link>

@@ -6,4 +6,6 @@ export const json = (url, options) => fetch(url, {
   ...options,
 });
 
-export const post = (url, options) => json(url, { method: 'post', ...options });
+const factory = method => (url, options) => json(url, { method, ...options });
+export const patch = factory('patch');
+export const post = factory('post');

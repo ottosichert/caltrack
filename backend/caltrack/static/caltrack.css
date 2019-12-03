@@ -10,7 +10,6 @@ body {
 }
 
 .container {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,10 +34,19 @@ body {
 .menu {
   border-bottom: 1px solid #bbb;
   background-color: #00000008;
+  margin-bottom: 1rem;
 }
 
 /* allow pure-menu-selected on <a> element itself to support <NavRouter> */
 .pure-menu-selected.pure-menu-link,
 .pure-menu-selected.pure-menu-link:visited {
     color: #000;
+}
+
+/* fix pure-group with legend */
+.pure-form .pure-group input:first-of-type,
+.pure-form .pure-group textarea:first-of-type {
+    top: 1px;
+    border-radius: 4px 4px 0 0;
+    margin: 0;
 }
