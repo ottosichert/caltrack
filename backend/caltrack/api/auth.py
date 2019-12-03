@@ -29,10 +29,12 @@ def login_required(func):
 
 def roles_required(*roles):
     def wrapper(func):
+        @login_required
         @functools.wraps(func)
         def wrapped_func(*args, **kwargs):
+            query = models.Role.query.join(models.User.roles).filter(models.User.id == g.user.id)
             for role in roles:
-                if role not in g.user.roles:
+                if query.filter_by(name=role).count() == 0:
                     current_app.logger.info(f'Unauthorized access attempt')
                     return abort(403)
             return func(*args, **kwargs)

@@ -25,6 +25,9 @@ export default function Menu() {
           <NavLink to="/portal/profile" className="pure-menu-link" activeClassName="pure-menu-selected">Profile</NavLink>
         </li>
         <li className="pure-menu-item">
+          <NavLink to="/portal/users" className="pure-menu-link" activeClassName="pure-menu-selected">Users</NavLink>
+        </li>
+        <li className="pure-menu-item">
           <Link to="" className="pure-menu-link" onClick={handleClick}>Logout</Link>
         </li>
       </ul>
