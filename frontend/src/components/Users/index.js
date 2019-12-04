@@ -1,52 +1,25 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 
-import { get, post } from '../../utils/functions';
-import { useInput, useAuthorization } from '../../utils/hooks';
+import { post } from '../../utils/functions';
+import { useInput, useAuthorization, useResource } from '../../utils/hooks';
 
 export default function Users() {
   const [values, handleChange, setValues] = useInput();
-  const [users, setUsers] = useState(null);
-  const [roles, setRoles] = useState(null);
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useAuthorization({ role: 'Manager' });
 
-  const usersEndpoint = '/api/users';
-  const rolesEndpoint = '/api/roles';
-
-  // load users
-  useEffect(() => {
-    (async () => {
-      const response = await get(usersEndpoint);
-      if (!response.ok) {
-        return setError('Error while loading users! Please reload page.');
-      }
-      const users = await response.json();
-      setUsers(users);
-    })();
-  }, [version]);
-
-  // load roles
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const response = await get(rolesEndpoint);
-      if (!response.ok) {
-        return setError('Error while loading roles! Please reload page.');
-      }
-      const roles = await response.json();
-      setRoles(roles);
-      setLoading(false);
-    })();
-  }, []);
+  const endpoint = '/api/users';
+  const [users, usersLoading, usersError] = useResource(endpoint, [version]);
+  const [roles, rolesLoading, rolesError] = useResource('/api/roles', [version]);
 
   const handleSubmit = async event => {
     event.preventDefault();
     setError('');
     setLoading(true);
-    const response = await post(usersEndpoint, { body: JSON.stringify(values) });
+    const response = await post(endpoint, { body: JSON.stringify(values) });
     setLoading(false);
     if (!response.ok) {
       return setError('Error while creating user!');
@@ -68,7 +41,7 @@ export default function Users() {
         </thead>
 
         <tbody>
-          {users === null && (
+          {usersLoading && (
             <tr>
               <td colSpan={4}>Loading users...</td>
             </tr>
@@ -81,11 +54,16 @@ export default function Users() {
               <td>Actions</td>
             </tr>
           ))}
+          {usersError && (
+            <tr>
+              <td colSpan={4}>{usersError}</td>
+            </tr>
+          )}
         </tbody>
       </table>
 
-      <form className="pure-form form" method="post" action={usersEndpoint} onSubmit={handleSubmit}>
-        <fieldset className="pure-group" disabled={loading}>
+      <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
+        <fieldset className="pure-group" disabled={loading || rolesLoading || rolesError}>
           <legend>New user</legend>
 
           <input
@@ -110,10 +88,10 @@ export default function Users() {
             name="role_ids"
             multiple
             onChange={handleChange}
-            disabled={loading}
+            disabled={loading || rolesLoading || rolesError}
             value={values.role_ids || []}
           >
-            {roles === null && (
+            {rolesLoading && (
               <option>Loading roles...</option>
             )}
             {roles && roles.map(role => (
@@ -123,7 +101,7 @@ export default function Users() {
         </fieldset>
 
         <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
-        <span className="pure-form-message error">{error || "\u00a0"}</span>
+        <span className="pure-form-message error">{error || rolesError || "\u00a0"}</span>
       </form>
     </Fragment>
   );

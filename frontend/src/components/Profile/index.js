@@ -1,32 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 
-import { get, patch } from '../../utils/functions';
-import { useInput } from '../../utils/hooks';
+import { patch } from '../../utils/functions';
+import { useInput, useResource } from '../../utils/hooks';
 
 export default function Profile() {
   const [values, handleChange, setValues] = useInput();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const history = useHistory();
 
   const endpoint = "/api/profile";
+  const [profile, profileLoading, profileError] = useResource(endpoint);
+
   useEffect(() => {
-    (async () => {
-      const response = await get(endpoint);
-      if (!response.ok) {
-        return setError('Error while loading profile! Please reload page.');
-      }
-      const profile = await response.json();
-      setValues(profile);
-      setLoading(false);
-    })();
-  }, [setValues]);
+    setValues(profile || {});
+  }, [setValues, profile]);
 
   const handleSubmit = event => {
     event.preventDefault();
     setLoading(true);
-    setError("");
+    setError(null);
 
     (async () => {
       const response = await patch(endpoint, { body: JSON.stringify(values) });
@@ -39,10 +33,11 @@ export default function Profile() {
   };
 
   const changingPassword = Boolean(values.old_password || values.new_password);
+  const disabled = loading || profileLoading || profileError;
 
   return (
     <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
-      <fieldset className="pure-group" disabled={loading}>
+      <fieldset className="pure-group" disabled={disabled}>
         <legend>Change password</legend>
 
         <input
@@ -63,7 +58,7 @@ export default function Profile() {
         />
       </fieldset>
 
-      <fieldset className="pure-group" disabled={loading}>
+      <fieldset className="pure-group" disabled={disabled}>
         <legend>Calories per day</legend>
 
         <input
@@ -81,16 +76,16 @@ export default function Profile() {
         <button
           className="pure-button pure-button-primary pure-input-1-2"
           type="submit"
-          disabled={loading}
+          disabled={disabled}
         >
           Save
         </button>
-        <Link className="pure-button pure-input-1-2" to="/portal" disabled={loading}>
+        <Link className="pure-button pure-input-1-2" to="/portal" disabled={disabled}>
           Cancel
         </Link>
       </div>
 
-      <span className="pure-form-message error">{error || "\u00a0"}</span>
+      <span className="pure-form-message error">{error || profileError || "\u00a0"}</span>
     </form>
   );
 }

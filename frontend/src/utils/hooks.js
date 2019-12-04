@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 
+import { get} from './functions';
 import { useStore } from '../components/Store';
 
 export function useInput(defaultValues = {}) {
@@ -35,4 +36,30 @@ export function useAuthorization({ role } = {}) {
       history.push('/portal');
     }
   }, [user, history, role]);
+}
+
+export function useResource(endpoint, dependencies = []) {
+  const [resource, setResource] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(
+    () => {
+      setLoading(true);
+      setError(null);
+      (async () => {
+        const response = await get(endpoint);
+        setLoading(false);
+        if (!response.ok) {
+          return setError(`Error while loading ${endpoint.split('/').slice(-1)[0]}! Please reload page.`);
+        }
+        const data = await response.json();
+        setResource(data);
+      })();
+    }, [
+      endpoint,
+      ...dependencies, // eslint-disable-line react-hooks/exhaustive-deps
+    ]);
+
+  return [resource, loading, error];
 }
