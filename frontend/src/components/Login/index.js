@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 
+import { useStore } from '../Store';
 import { post } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
@@ -8,7 +9,14 @@ export default function Login() {
   const [values, handleChange] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [user, dispatch] = useStore(state => state.user);
   const history = useHistory();
+
+  useEffect(() => {
+    if (user) {
+      history.push('/portal');
+    }
+  }, [user, history]);
 
   const handleClick = event => {
     // let form submission handle required fields
@@ -31,9 +39,7 @@ export default function Login() {
       }
 
       const user = await response.json();
-      // do something with user
-
-      history.push('/portal');
+      dispatch({ type: 'login', payload: user });
     })();
   };
 

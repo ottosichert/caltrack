@@ -9,7 +9,10 @@ db = current_app.extensions['db']
 models = current_app.extensions['models']
 api = current_app.extensions['api']
 
-auth_fields = {'username': fields.String}
+auth_fields = {
+    'username': fields.String,
+    'roles': fields.List(fields.String(attribute='name')),
+}
 
 auth_parser = reqparse.RequestParser()
 auth_parser.add_argument('username', type=str, required=True)
@@ -68,6 +71,7 @@ class Authentication(Resource):
             current_app.logger.info(f'Attempt to create duplicate {user}')
             return abort(403)
 
+    @marshal_with(auth_fields)
     def login(self):
         args = auth_parser.parse_args(strict=True)
         user = models.User.query.filter_by(username=args['username']).first()
@@ -85,9 +89,8 @@ class Authentication(Resource):
     @login_required
     def logout(self):
         del session[self.USER_SESSION_KEY]
-        return g.user
+        return {}
 
-    @marshal_with(auth_fields)
     def post(self, action):
         return getattr(self, action)()
 

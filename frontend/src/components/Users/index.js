@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 
 import { get, post } from '../../utils/functions';
-import { useInput } from '../../utils/hooks';
+import { useInput, useAuthorization } from '../../utils/hooks';
 
 export default function Users() {
   const [values, handleChange, setValues] = useInput();
@@ -10,6 +10,8 @@ export default function Users() {
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useAuthorization({ role: 'Manager' });
 
   const usersEndpoint = '/api/users';
   const rolesEndpoint = '/api/roles';

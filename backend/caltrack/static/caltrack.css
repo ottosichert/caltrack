@@ -37,6 +37,18 @@ body {
   margin-bottom: 1rem;
 }
 
+.brand {
+  float: left;
+}
+
+.menu .navigation {
+  display: flex;
+}
+
+.user {
+  margin-left: auto;
+}
+
 .table {
   margin: 0 auto 1rem;
 }
