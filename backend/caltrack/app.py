@@ -17,7 +17,7 @@ def create_app(config=None):
 
         app.config.from_object(config)
 
-        from . import db, models, api  # noqa: F401
+        from . import db, models, api, cli  # noqa: F401
 
     @app.route('/')
     def index():
