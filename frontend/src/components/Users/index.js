@@ -4,15 +4,20 @@ import { get, post } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
 export default function Users() {
-  const [values, handleChange] = useInput();
+  const [values, handleChange, setValues] = useInput();
   const [users, setUsers] = useState(null);
+  const [roles, setRoles] = useState(null);
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const usersEndpoint = '/api/users';
+  const rolesEndpoint = '/api/roles';
+
+  // load users
   useEffect(() => {
     (async () => {
-      const response = await get('/api/users');
+      const response = await get(usersEndpoint);
       if (!response.ok) {
         return setError('Error while loading users! Please reload page.');
       }
@@ -21,14 +26,31 @@ export default function Users() {
     })();
   }, [version]);
 
+  // load roles
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const response = await get(rolesEndpoint);
+      if (!response.ok) {
+        return setError('Error while loading roles! Please reload page.');
+      }
+      const roles = await response.json();
+      setRoles(roles);
+      setLoading(false);
+    })();
+  }, []);
+
   const handleSubmit = async event => {
     event.preventDefault();
+    setError('');
     setLoading(true);
-    const response = post('/api/users', { body: JSON.stringify(values) });
+    const response = await post(usersEndpoint, { body: JSON.stringify(values) });
     setLoading(false);
     if (!response.ok) {
       return setError('Error while creating user!');
     }
+    setVersion(version + 1);
+    setValues({});
   };
 
   return (
@@ -60,9 +82,9 @@ export default function Users() {
         </tbody>
       </table>
 
-      <form className="pure-form form" method="post" action="/api/users" onSubmit={handleSubmit}>
+      <form className="pure-form form" method="post" action={usersEndpoint} onSubmit={handleSubmit}>
         <fieldset className="pure-group" disabled={loading}>
-          <legend>Create user</legend>
+          <legend>New user</legend>
 
           <input
             className="pure-input-1"
@@ -70,6 +92,7 @@ export default function Users() {
             placeholder="Username"
             onChange={handleChange}
             required
+            value={values.username || ""}
           />
           <input
             className="pure-input-1"
@@ -78,10 +101,26 @@ export default function Users() {
             onChange={handleChange}
             type="password"
             required
+            value={values.password || ""}
           />
-          <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
+          <select
+            className="pure-input-1"
+            name="role_ids"
+            multiple
+            onChange={handleChange}
+            disabled={loading}
+            value={values.role_ids || []}
+          >
+            {roles === null && (
+              <option>Loading roles...</option>
+            )}
+            {roles && roles.map(role => (
+              <option key={role.id} value={role.id}>{role.name}</option>
+            ))}
+          </select>
         </fieldset>
 
+        <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
         <span className="pure-form-message error">{error || "\u00a0"}</span>
       </form>
     </Fragment>

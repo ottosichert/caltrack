@@ -73,6 +73,7 @@ export default function Profile() {
           type="number"
           min={0}
           value={values.daily_calories || ""}
+          required
         />
       </fieldset>
 

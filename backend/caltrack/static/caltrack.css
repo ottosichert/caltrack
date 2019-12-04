@@ -41,6 +41,7 @@ body {
   margin: 0 auto 1rem;
 }
 
+
 /* allow pure-menu-selected on <a> element itself to support <NavRouter> */
 .pure-menu-selected.pure-menu-link,
 .pure-menu-selected.pure-menu-link:visited {
@@ -52,5 +53,20 @@ body {
 .pure-form .pure-group textarea:first-of-type {
     top: 1px;
     border-radius: 4px 4px 0 0;
+    margin: 0;
+}
+
+/* fix pure-group with single element */
+.pure-form .pure-group input:only-of-type,
+.pure-form .pure-group textarea:only-of-type {
+    top: 0;
+    border-radius: 4px;
+    margin: 0;
+}
+
+/* apply pure-group styles to <select> children as well */
+.pure-form .pure-group select:last-child {
+    top: -2px;
+    border-radius: 0 0 4px 4px;
     margin: 0;
 }
