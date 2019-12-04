@@ -1,8 +1,22 @@
 import sys
 
 from flask import current_app
+from werkzeug.security import check_password_hash, generate_password_hash
 
 db = current_app.extensions['db']
+
+
+class Opaque:
+    def __init__(self, model, attribute, validator):
+        self.model = model
+        self.attribute = attribute
+        self.validator = validator
+
+    def __eq__(self, other):
+        return self.validator(getattr(self.model, self.attribute), other)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 user_roles = db.Table(
@@ -20,8 +34,21 @@ class User(db.Model):
 
     roles = db.relationship('Role', secondary=user_roles, lazy='subquery', backref=db.backref('users', lazy=True))
 
+    def __init__(self, *args, password=None, **kwargs):
+        if password:
+            self.password = password
+        super(User, self).__init__(*args, **kwargs)
+
     def __repr__(self):
         return f'User(id={self.id}, username="{self.username}")'
+
+    @property
+    def password(self):
+        return Opaque(self, 'password_hash', check_password_hash)
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
 
 
 class Role(db.Model):

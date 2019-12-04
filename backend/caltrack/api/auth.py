@@ -4,7 +4,6 @@ import sys
 from flask import current_app, g, session
 from flask_restful import Resource, abort, fields, marshal_with, reqparse
 from sqlalchemy.exc import IntegrityError
-from werkzeug.security import check_password_hash, generate_password_hash
 
 db = current_app.extensions['db']
 models = current_app.extensions['models']
@@ -57,10 +56,7 @@ class Authentication(Resource):
 
     def register(self):
         args = auth_parser.parse_args(strict=True)
-        user = models.User(
-            username=args['username'],
-            password_hash=generate_password_hash(args['password']),
-        )
+        user = models.User(**args)
         db.session.add(user)
 
         try:
@@ -79,7 +75,7 @@ class Authentication(Resource):
         if not user:
             current_app.logger.info(f'Username {args["username"]} not found')
             return abort(403)
-        elif not check_password_hash(user.password_hash, args['password']):
+        elif user.password != args['password']:
             current_app.logger.info(f'Invalid password for {user}')
             return abort(403)
 
