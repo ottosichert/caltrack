@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback, useState } from 'react';
 
 import Edit from './Edit';
+import { delete_ } from '../../utils/functions';
 import { useAuthorization, useResource } from '../../utils/hooks';
 
 export default function Users() {
@@ -14,7 +15,14 @@ export default function Users() {
 
   const resetUser = useCallback(() => setUser(null), [setUser]);
   const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);
-  const handleClick = user => event => setUser(user);
+  const handleEdit = user => event => setUser(user);
+  const handleDelete = user => async event => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm(`Do you really want to delete user "${user.username}" and all related data?\n\nThis action cannot be undone.`)) {
+      await delete_(`${endpoint}/${user.id}`);
+      incrementVersion();
+    }
+  };
 
   return (
     <Fragment>
@@ -40,7 +48,10 @@ export default function Users() {
               <td>{user.username}</td>
               <td>{user.roles.map(role => role.name).join(', ')}</td>
               <td>
-                <button className="pure-button pure-button-primary" onClick={handleClick(user)}>Edit</button>
+                <div className="pure-button-group">
+                  <button className="pure-button pure-button-primary" onClick={handleEdit(user)}>Edit</button>
+                  <button className="pure-button" onClick={handleDelete(user)}>Delete</button>
+                </div>
               </td>
             </tr>
           ))}

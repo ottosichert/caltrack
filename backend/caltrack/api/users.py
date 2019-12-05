@@ -67,6 +67,13 @@ class User(Resource):
         db.session.commit()
         return user
 
+    @marshal_with(user_fields)
+    @auth.roles_required("Manager")
+    def delete(self, id):
+        user = models.User.query.get(id)
+        db.session.delete(user)
+        db.session.commit()
+
 
 class RoleList(Resource):
     @marshal_with(role_fields)
