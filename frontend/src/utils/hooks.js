@@ -1,3 +1,4 @@
+import queryString from 'query-string';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 
@@ -38,7 +39,7 @@ export function useAuthorization({ role } = {}) {
   }, [user, history, role]);
 }
 
-export function useResource(endpoint, dependencies = []) {
+export function useResource(endpoint, dependencies = [], filters = null) {
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,7 +50,7 @@ export function useResource(endpoint, dependencies = []) {
       setError(null);
       setResource(null);
       (async () => {
-        const response = await get(endpoint);
+        const response = await get(`${endpoint}${filters ? `?${queryString.stringify(filters)}` : ''}`);
         setLoading(false);
         if (!response.ok) {
           return setError(`Error while loading ${endpoint.split('/').slice(-1)[0]}! Please reload page.`);
@@ -59,6 +60,7 @@ export function useResource(endpoint, dependencies = []) {
       })();
     }, [
       endpoint,
+      filters,
       ...dependencies, // eslint-disable-line react-hooks/exhaustive-deps
     ]);
 

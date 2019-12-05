@@ -1,6 +1,7 @@
 import React, { Fragment, useCallback, useState } from 'react';
 
 import Edit from './Edit';
+import Filters from './Filters';
 import { delete_ } from '../../utils/functions';
 import { useResource } from '../../utils/hooks';
 
@@ -9,7 +10,8 @@ export default function Meals() {
   const [meal, setMeal] = useState(null);
 
   const endpoint = '/api/entries';
-  const [entries, entriesLoading, entriesError] = useResource(endpoint, [version]);
+  const [filters, setFilters] = useState(null);
+  const [entries, entriesLoading, entriesError] = useResource(endpoint, [version], filters);
 
   const resetMeal = useCallback(() => setMeal(null), [setMeal]);
   const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);
@@ -25,6 +27,7 @@ export default function Meals() {
   return (
     <Fragment>
       <Edit endpoint={endpoint} resource={meal} reset={resetMeal} save={incrementVersion} />
+      <Filters update={setFilters} loading={entriesLoading} />
 
       <table className="pure-table pure-table-striped table">
         <thead>

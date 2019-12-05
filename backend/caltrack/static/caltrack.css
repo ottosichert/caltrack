@@ -53,6 +53,13 @@ body {
   margin: 0 auto 1rem;
 }
 
+.filter {
+  width: 50%;
+  max-width: 30rem;
+  min-width: 20rem;
+  margin: 1rem auto;
+}
+
 .form .pure-group .pure-input-1-2.left,
 .form .pure-group .pure-input-1-2.right {
   display: inline-block;
