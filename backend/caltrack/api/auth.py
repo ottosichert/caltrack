@@ -34,12 +34,25 @@ def roles_required(*roles):
         @login_required
         @functools.wraps(func)
         def wrapped_func(*args, **kwargs):
-            query = models.Role.query.join(models.User.roles).filter(models.User.id == g.user.id)
             for role in roles:
-                if query.filter_by(name=role).count() == 0:
-                    current_app.logger.info(f'Unauthorized access attempt')
+                if not g.user.has_role(role):
+                    current_app.logger.info(f'Unauthorized access attempt from {g.user}')
                     return abort(403)
             return func(*args, **kwargs)
+        return wrapped_func
+    return wrapper
+
+
+def ownership_required(model):
+    def wrapper(func):
+        @login_required
+        @functools.wraps(func)
+        def wrapped_func(*args, id=None, **kwargs):
+            resource = model.query.get(id)
+            if not g.user.has_role('Admin') and resource.user != g.user:
+                current_app.logger.info(f'Unowned access attempt from {g.user} to {resource}')
+                return abort(403)
+            return func(*args, id=id, **kwargs)
         return wrapped_func
     return wrapper
 

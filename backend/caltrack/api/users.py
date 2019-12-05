@@ -58,7 +58,7 @@ class UserList(Resource):
 class User(Resource):
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
-    def patch(self, id):
+    def patch(self, id=None):
         args = update_parser.parse_args(strict=True)
         user = models.User.query.get(id)
         for key, value in args.items():
@@ -69,7 +69,7 @@ class User(Resource):
 
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
-    def delete(self, id):
+    def delete(self, id=None):
         user = models.User.query.get(id)
         db.session.delete(user)
         db.session.commit()

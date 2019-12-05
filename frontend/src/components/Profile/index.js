@@ -66,7 +66,7 @@ export default function Profile() {
           name="daily_calories"
           onChange={handleChange}
           type="number"
-          min={0}
+          min={1}
           value={values.daily_calories || ""}
           required
         />

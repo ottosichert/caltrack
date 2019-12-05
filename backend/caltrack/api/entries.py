@@ -50,4 +50,24 @@ class EntryList(Resource):
         return entry
 
 
+class Entry(Resource):
+    @marshal_with(entry_fields)
+    @auth.ownership_required(models.Entry)
+    def patch(self, id=None):
+        args = entry_parser.parse_args(strict=True)
+        entry = models.Entry.query.get(id)
+        for key, value in args.items():
+            setattr(entry, key, value)
+        db.session.commit()
+        return entry
+
+    @marshal_with(entry_fields)
+    @auth.ownership_required(models.Entry)
+    def delete(self, id=None):
+        entry = models.Entry.query.get(id)
+        db.session.delete(entry)
+        db.session.commit()
+
+
 api.add_resource(EntryList, '/entries')
+api.add_resource(Entry, '/entries/<int:id>')

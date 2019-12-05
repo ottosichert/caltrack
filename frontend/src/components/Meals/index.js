@@ -1,88 +1,30 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 
-import { post } from '../../utils/functions';
-import { useInput, useResource } from '../../utils/hooks';
+import Edit from './Edit';
+import { delete_ } from '../../utils/functions';
+import { useResource } from '../../utils/hooks';
 
 export default function Meals() {
-  // get timezone naive datetime for user input
-  const utcNow = new Date();
-  const offset = utcNow.getTimezoneOffset();
-  const now = (new Date(utcNow.getTime() - offset * 60 * 1000)).toJSON();
-  const [date, time] = now.substring(0, now.lastIndexOf(':')).split('T');
-
-  const [values, handleChange, setValues] = useInput({ date, time });
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [meal, setMeal] = useState(null);
 
   const endpoint = '/api/entries';
   const [entries, entriesLoading, entriesError] = useResource(endpoint, [version]);
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    setError('');
-    setLoading(true);
-    const utcValues = {
-      calories: values.calories,
-      label: values.label,
-      datetime: (new Date(`${values.date}T${values.time}:00`)).toJSON(),
-    };
-    const response = await post(endpoint, { body: JSON.stringify(utcValues) });
-    setLoading(false);
-    if (!response.ok) {
-      return setError('Error while creating entry!');
+  const resetMeal = useCallback(() => setMeal(null), [setMeal]);
+  const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);
+  const handleEdit = meal => event => setMeal(meal);
+  const handleDelete = meal => async event => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm(`Do you really want to delete entry "${meal.label}"?`)) {
+      await delete_(`${endpoint}/${meal.id}`);
+      incrementVersion();
     }
-    setVersion(version + 1);
-    setValues({ date, time });
   };
 
   return (
     <Fragment>
-      <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
-        <fieldset className="pure-group" disabled={loading}>
-          <legend>New entry</legend>
-
-          <input
-            type="date"
-            className="pure-input-1-2 left"
-            name="date"
-            placeholder="Date"
-            onChange={handleChange}
-            required
-            value={values.date || ""}
-          />
-          <input
-            type="time"
-            className="pure-input-1-2 right"
-            name="time"
-            placeholder="Time"
-            onChange={handleChange}
-            required
-            value={values.time || ""}
-          />
-          <input
-            className="pure-input-1"
-            name="label"
-            placeholder="Label"
-            onChange={handleChange}
-            required
-            value={values.label || ""}
-          />
-          <input
-            className="pure-input-1"
-            name="calories"
-            placeholder="Calories"
-            onChange={handleChange}
-            type="number"
-            min={0}
-            value={values.calories || ""}
-            required
-          />
-        </fieldset>
-
-        <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
-        <span className="pure-form-message error">{error || "\u00a0"}</span>
-      </form>
+      <Edit endpoint={endpoint} resource={meal} reset={resetMeal} save={incrementVersion} />
 
       <table className="pure-table pure-table-striped table">
         <thead>
@@ -114,7 +56,12 @@ export default function Meals() {
                 <td>{datetime.toLocaleTimeString()}</td>
                 <td>{entry.label}</td>
                 <td>{entry.calories}</td>
-                <td>Actions</td>
+                <td>
+                  <div className="pure-button-group">
+                    <button className="pure-button pure-button-primary" onClick={handleEdit(entry)}>Edit</button>
+                    <button className="pure-button" onClick={handleDelete(entry)}>Delete</button>
+                  </div>
+                </td>
               </tr>
             );
           })}

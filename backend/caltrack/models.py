@@ -44,6 +44,12 @@ class User(db.Model):
     def __repr__(self):
         return f'User(id={self.id}, username="{self.username}")'
 
+    def has_role(self, role_name):
+        for role in self.roles:
+            if role.name == role_name:
+                return True
+        return False
+
     @property
     def password(self):
         return Opaque(self, 'password_hash', check_password_hash)

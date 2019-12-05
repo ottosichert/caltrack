@@ -11,3 +11,9 @@ export const patch = factory('patch');
 export const post = factory('post');
 export const delete_ = factory('delete');
 export const get = json;
+export const toLocaleDateTime = datetime => {
+  const offset = datetime.getTimezoneOffset();
+  const now = (new Date(datetime.getTime() - offset * 60 * 1000)).toJSON();
+  const [date, time] = now.substring(0, now.lastIndexOf(':')).split('T');
+  return [date, time];
+}
