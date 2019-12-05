@@ -38,6 +38,20 @@ export default function Profile() {
   return (
     <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
       <fieldset className="pure-group" disabled={disabled}>
+        <legend>Calories per day</legend>
+
+        <input
+          className="pure-input-1"
+          name="daily_calories"
+          onChange={handleChange}
+          type="number"
+          min={1}
+          value={values.daily_calories || ""}
+          required
+        />
+      </fieldset>
+
+      <fieldset className="pure-group" disabled={disabled}>
         <legend>Change password</legend>
 
         <input
@@ -55,20 +69,6 @@ export default function Profile() {
           onChange={handleChange}
           type="password"
           required={changingPassword}
-        />
-      </fieldset>
-
-      <fieldset className="pure-group" disabled={disabled}>
-        <legend>Calories per day</legend>
-
-        <input
-          className="pure-input-1"
-          name="daily_calories"
-          onChange={handleChange}
-          type="number"
-          min={1}
-          value={values.daily_calories || ""}
-          required
         />
       </fieldset>
 
