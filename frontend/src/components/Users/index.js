@@ -26,6 +26,8 @@ export default function Users() {
 
   return (
     <Fragment>
+      <Edit endpoint={endpoint} resource={user} reset={resetUser} save={incrementVersion} />
+
       <table className="pure-table pure-table-striped table">
         <thead>
           <tr>
@@ -62,8 +64,6 @@ export default function Users() {
           )}
         </tbody>
       </table>
-
-      <Edit endpoint={endpoint} resource={user} reset={resetUser} save={incrementVersion} />
     </Fragment>
   );
 }

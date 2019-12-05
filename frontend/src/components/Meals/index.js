@@ -38,48 +38,6 @@ export default function Meals() {
 
   return (
     <Fragment>
-      <table className="pure-table pure-table-striped table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Label</th>
-            <th>Calories</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {entriesLoading && (
-            <tr>
-              <td colSpan={5}>Loading meals...</td>
-            </tr>
-          )}
-          {entries && entries.length === 0 && (
-            <tr>
-              <td colSpan={5}>No meals submitted yet! Use the form below</td>
-            </tr>
-          )}
-          {entries && entries.map(entry => {
-            const datetime = new Date(entry.datetime);
-            return (
-              <tr key={entry.id}>
-                <td>{datetime.toLocaleDateString()}</td>
-                <td>{datetime.toLocaleTimeString()}</td>
-                <td>{entry.label}</td>
-                <td>{entry.calories}</td>
-                <td>Actions</td>
-              </tr>
-            );
-          })}
-          {entriesError && (
-            <tr>
-              <td colSpan={5}>{entriesError}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
       <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
         <fieldset className="pure-group" disabled={loading}>
           <legend>New entry</legend>
@@ -125,6 +83,48 @@ export default function Meals() {
         <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
         <span className="pure-form-message error">{error || "\u00a0"}</span>
       </form>
+
+      <table className="pure-table pure-table-striped table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Label</th>
+            <th>Calories</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {entriesLoading && (
+            <tr>
+              <td colSpan={5}>Loading meals...</td>
+            </tr>
+          )}
+          {entries && entries.length === 0 && (
+            <tr>
+              <td colSpan={5}>No meals submitted yet! Use the form above</td>
+            </tr>
+          )}
+          {entries && entries.map(entry => {
+            const datetime = new Date(entry.datetime);
+            return (
+              <tr key={entry.id}>
+                <td>{datetime.toLocaleDateString()}</td>
+                <td>{datetime.toLocaleTimeString()}</td>
+                <td>{entry.label}</td>
+                <td>{entry.calories}</td>
+                <td>Actions</td>
+              </tr>
+            );
+          })}
+          {entriesError && (
+            <tr>
+              <td colSpan={5}>{entriesError}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </Fragment>
   );
 }
