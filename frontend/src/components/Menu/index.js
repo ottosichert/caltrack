@@ -23,7 +23,7 @@ export default function Menu() {
       <span className="pure-menu-heading brand">CalTrack</span>
       <ul className="pure-menu-list navigation">
         <li className="pure-menu-item">
-          <NavLink to="/portal" className="pure-menu-link" activeClassName="pure-menu-selected" exact>Dashboard</NavLink>
+          <NavLink to="/portal" className="pure-menu-link" activeClassName="pure-menu-selected" exact>Meals</NavLink>
         </li>
         <li className="pure-menu-item">
           <NavLink to="/portal/profile" className="pure-menu-link" activeClassName="pure-menu-selected">Profile</NavLink>

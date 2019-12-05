@@ -1,3 +1,4 @@
+from datetime import datetime
 import sys
 
 from flask import current_app
@@ -32,6 +33,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     daily_calories = db.Column(db.Integer, server_default="2000", nullable=False)
 
+    meals = db.relationship('Entry', backref='user', lazy=True)
     roles = db.relationship('Role', secondary=user_roles, lazy='subquery', backref=db.backref('users', lazy=True))
 
     def __init__(self, *args, password=None, **kwargs):
@@ -57,6 +59,17 @@ class Role(db.Model):
 
     def __repr__(self):
         return f'Role(id={self.id}, name="{self.name}")'
+
+
+class Entry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    label = db.Column(db.String(255), index=True, nullable=False)
+    calories = db.Column(db.Integer, nullable=False)
+    datetime = db.Column(db.DateTime, index=True, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'Entry(id={self.id}, user_id={self.user_id}, label="{self.label}", calories={self.calories})'
 
 
 current_app.extensions['models'] = sys.modules[__name__]

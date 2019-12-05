@@ -53,6 +53,22 @@ body {
   margin: 0 auto 1rem;
 }
 
+.form .pure-group .pure-input-1-2.left,
+.form .pure-group .pure-input-1-2.right {
+  display: inline-block;
+}
+
+.form .pure-group .pure-input-1-2.left {
+  border-radius: 4px 0 0;
+}
+
+.form .pure-group .pure-input-1-2.right {
+  border-top-right-radius: 4px;
+  top: 1px;
+  bottom: -1px;
+  margin: 0;
+}
+
 
 /* allow pure-menu-selected on <a> element itself to support <NavRouter> */
 .pure-menu-selected.pure-menu-link,

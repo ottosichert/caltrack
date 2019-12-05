@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Switch, Route, useRouteMatch } from "react-router-dom";
 
+import Meals from '../Meals';
 import Menu from '../Menu';
 import Profile from '../Profile';
 import Users from '../Users';
@@ -20,7 +21,7 @@ export default function Portal() {
           <Users />
         </Route>
         <Route path={match.path}>
-          <h1 className="title">Dashboard</h1>
+          <Meals />
         </Route>
       </Switch>
     </Fragment>
