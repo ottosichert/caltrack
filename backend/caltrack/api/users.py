@@ -15,19 +15,22 @@ role_fields = {
 user_fields = {
     'id': fields.Integer,
     'username': fields.String,
-    'roles': fields.List(fields.String(attribute='name')),
+    'roles': fields.Nested(role_fields),
 }
 
-user_parser = reqparse.RequestParser()
-user_parser.add_argument('username', type=str, required=True)
-user_parser.add_argument('password', type=str, required=True)
-user_parser.add_argument(
+create_parser = reqparse.RequestParser()
+create_parser.add_argument('username', type=str, required=True)
+create_parser.add_argument('password', type=str, required=True)
+create_parser.add_argument(
     'role_ids',
     type=lambda value: models.Role.query.get(value),
     action='append',
     default=[],
     dest='roles'
 )
+
+update_parser = create_parser.copy()
+update_parser.replace_argument('password', type=str)
 
 
 class UserList(Resource):
@@ -39,7 +42,7 @@ class UserList(Resource):
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
     def post(self):
-        args = user_parser.parse_args(strict=True)
+        args = create_parser.parse_args(strict=True)
         user = models.User(**args)
         db.session.add(user)
         try:
@@ -52,6 +55,19 @@ class UserList(Resource):
             return abort(403)
 
 
+class User(Resource):
+    @marshal_with(user_fields)
+    @auth.roles_required("Manager")
+    def patch(self, id):
+        args = update_parser.parse_args(strict=True)
+        user = models.User.query.get(id)
+        for key, value in args.items():
+            if value is not None:
+                setattr(user, key, value)
+        db.session.commit()
+        return user
+
+
 class RoleList(Resource):
     @marshal_with(role_fields)
     @auth.roles_required("Manager")
@@ -60,4 +76,5 @@ class RoleList(Resource):
 
 
 api.add_resource(UserList, '/users')
+api.add_resource(User, '/users/<int:id>')
 api.add_resource(RoleList, '/roles')

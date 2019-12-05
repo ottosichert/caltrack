@@ -47,6 +47,7 @@ export function useResource(endpoint, dependencies = []) {
     () => {
       setLoading(true);
       setError(null);
+      setResource(null);
       (async () => {
         const response = await get(endpoint);
         setLoading(false);

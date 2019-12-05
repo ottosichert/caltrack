@@ -36,7 +36,7 @@ class EntryList(Resource):
     @marshal_with(entry_fields)
     @auth.login_required
     def get(self):
-        return models.Entry.query.all()
+        return models.Entry.query.filter_by(user=g.user).all()
 
     @marshal_with(entry_fields)
     @auth.login_required

@@ -1,32 +1,20 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 
-import { post } from '../../utils/functions';
-import { useInput, useAuthorization, useResource } from '../../utils/hooks';
+import Edit from './Edit';
+import { useAuthorization, useResource } from '../../utils/hooks';
 
 export default function Users() {
-  const [values, handleChange, setValues] = useInput();
   const [version, setVersion] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
 
   useAuthorization({ role: 'Manager' });
 
   const endpoint = '/api/users';
   const [users, usersLoading, usersError] = useResource(endpoint, [version]);
-  const [roles, rolesLoading, rolesError] = useResource('/api/roles', [version]);
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    setError('');
-    setLoading(true);
-    const response = await post(endpoint, { body: JSON.stringify(values) });
-    setLoading(false);
-    if (!response.ok) {
-      return setError('Error while creating user!');
-    }
-    setVersion(version + 1);
-    setValues({});
-  };
+  const resetUser = useCallback(() => setUser(null), [setUser]);
+  const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);
+  const handleClick = user => event => setUser(user);
 
   return (
     <Fragment>
@@ -50,8 +38,10 @@ export default function Users() {
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.username}</td>
-              <td>{user.roles.join(', ')}</td>
-              <td>Actions</td>
+              <td>{user.roles.map(role => role.name).join(', ')}</td>
+              <td>
+                <button className="pure-button pure-button-primary" onClick={handleClick(user)}>Edit</button>
+              </td>
             </tr>
           ))}
           {usersError && (
@@ -62,47 +52,7 @@ export default function Users() {
         </tbody>
       </table>
 
-      <form className="pure-form form" method="post" action={endpoint} onSubmit={handleSubmit}>
-        <fieldset className="pure-group" disabled={loading || rolesLoading || rolesError}>
-          <legend>New user</legend>
-
-          <input
-            className="pure-input-1"
-            name="username"
-            placeholder="Username"
-            onChange={handleChange}
-            required
-            value={values.username || ""}
-          />
-          <input
-            className="pure-input-1"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            type="password"
-            required
-            value={values.password || ""}
-          />
-          <select
-            className="pure-input-1"
-            name="role_ids"
-            multiple
-            onChange={handleChange}
-            disabled={loading || rolesLoading || rolesError}
-            value={values.role_ids || []}
-          >
-            {rolesLoading && (
-              <option>Loading roles...</option>
-            )}
-            {roles && roles.map(role => (
-              <option key={role.id} value={role.id}>{role.name}</option>
-            ))}
-          </select>
-        </fieldset>
-
-        <button className="pure-button pure-button-primary pure-input-1" type="submit">Create</button>
-        <span className="pure-form-message error">{error || rolesError || "\u00a0"}</span>
-      </form>
+      <Edit endpoint={endpoint} resource={user} reset={resetUser} save={incrementVersion} />
     </Fragment>
   );
 }
