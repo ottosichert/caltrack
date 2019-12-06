@@ -14,12 +14,17 @@ export default function FilterMeals({ update, loading } = {}) {
     if (newValues.from_date) {
       newValues.from_date = toLocaleObject(newValues.from_date).toJSON();
     }
+    // filter by end of day to match user expectation
     if (newValues.to_date) {
-      // filter by end of day to match user expectation
       const endDate = toLocaleObject(newValues.to_date);
       endDate.setDate(endDate.getDate() + 1);
       endDate.setSeconds(endDate.getSeconds() - 1);
       newValues.to_date = endDate.toJSON();
+    }
+    // let backend handle timezone aware filtering
+    if (newValues.from_time || newValues.to_time) {
+      const now = new Date();
+      newValues.timezone_offset = now.getTimezoneOffset();
     }
     update(newValues);
   };

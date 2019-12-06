@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import timezone
 
 import dateutil.parser
 from flask import current_app, g
@@ -19,6 +19,10 @@ def to_datetime(value):
     return dateutil.parser.parse(value)
 
 
+def to_time(value):
+    return dateutil.parser.parse(value).time()
+
+
 entry_fields = {
     'id': fields.Integer,
     'label': fields.String,
@@ -34,6 +38,9 @@ entry_parser.add_argument('datetime', type=to_datetime, required=True)
 filter_parser = reqparse.RequestParser()
 filter_parser.add_argument('from_date', type=to_datetime, location='args')
 filter_parser.add_argument('to_date', type=to_datetime, location='args')
+filter_parser.add_argument('to_time', type=to_time, location='args')
+filter_parser.add_argument('from_time', type=to_time, location='args')
+filter_parser.add_argument('timezone_offset', type=int, location='args', default=0)
 
 
 class EntryList(Resource):
@@ -47,6 +54,14 @@ class EntryList(Resource):
             query = query.filter(models.Entry.datetime >= args['from_date'])
         if args['to_date']:
             query = query.filter(models.Entry.datetime <= args['to_date'])
+        if args['from_time']:
+            query = query.filter(
+                db.func.time(models.Entry.datetime, f"{-args['timezone_offset']} minutes") >= str(args['from_time'])
+            )
+        if args['to_time']:
+            query = query.filter(
+                db.func.time(models.Entry.datetime, f"{-args['timezone_offset']} minutes") <= str(args['to_time'])
+            )
 
         return query.all()
 
