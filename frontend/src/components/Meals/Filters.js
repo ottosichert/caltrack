@@ -2,10 +2,10 @@ import React from 'react';
 
 import { useInput } from '../../utils/hooks';
 
-export default function EditFilters({ update, loading } = {}) {
+export default function FilterMeals({ update, loading } = {}) {
   const [values, handleChange, setValues] = useInput();
 
-  const handleSubmit = event => {
+  const handleClick = event => {
     event.preventDefault();
     update(values);
   };
@@ -15,7 +15,7 @@ export default function EditFilters({ update, loading } = {}) {
   };
 
   return (
-    <form className="pure-form filter" onSubmit={handleSubmit}>
+    <form className="pure-form filter">
       <fieldset className="pure-g" disabled={loading}>
         <legend className="pure-u-1">Filter entries</legend>
 
@@ -60,6 +60,7 @@ export default function EditFilters({ update, loading } = {}) {
         <button
           className="pure-button pure-button-primary pure-input-1-2"
           type="submit"
+          onClick={handleClick}
           disabled={loading}
         >
           Apply
