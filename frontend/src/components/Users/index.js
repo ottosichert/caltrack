@@ -8,7 +8,7 @@ export default function Users() {
   const [version, setVersion] = useState(0);
   const [user, setUser] = useState(null);
 
-  useAuthorization({ role: 'Manager' });
+  useAuthorization('/portal', 'Manager');
 
   const endpoint = '/api/users';
   const [users, usersLoading, usersError] = useResource(endpoint, [version]);

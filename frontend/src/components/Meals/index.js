@@ -3,13 +3,14 @@ import React, { Fragment, useCallback, useState } from 'react';
 import Edit from './Edit';
 import Filters from './Filters';
 import { delete_ } from '../../utils/functions';
-import { useResource } from '../../utils/hooks';
+import { useResource, useRole } from '../../utils/hooks';
 
 export default function Meals() {
   const [version, setVersion] = useState(0);
   const [meal, setMeal] = useState(null);
 
   const endpoint = '/api/entries';
+  const isAdmin = useRole('Admin');
   const [filters, setFilters] = useState(null);
   const [entries, entriesLoading, entriesError] = useResource(endpoint, [version], filters);
 
@@ -24,6 +25,8 @@ export default function Meals() {
     }
   };
 
+  const columns = isAdmin ? 6 : 5;
+
   return (
     <Fragment>
       <Edit endpoint={endpoint} resource={meal} reset={resetMeal} save={incrementVersion} />
@@ -32,6 +35,9 @@ export default function Meals() {
       <table className="pure-table pure-table-striped table">
         <thead>
           <tr>
+            {isAdmin && (
+              <th>User ID</th>
+            )}
             <th>Date</th>
             <th>Time</th>
             <th>Label</th>
@@ -43,12 +49,12 @@ export default function Meals() {
         <tbody>
           {entriesLoading && (
             <tr>
-              <td colSpan={5}>Loading meals...</td>
+              <td colSpan={columns}>Loading meals...</td>
             </tr>
           )}
           {entries && entries.length === 0 && (
             <tr>
-              <td colSpan={5}>
+              <td colSpan={columns}>
                 {filters
                   ? 'No entries found! Reset or adjust filters above'
                   : 'No entries submitted yet! Use the form on top'
@@ -60,6 +66,9 @@ export default function Meals() {
             const datetime = new Date(entry.datetime);
             return (
               <tr key={entry.id}>
+                {isAdmin && (
+                  <td>{entry.user_id}</td>
+                )}
                 <td>{datetime.toLocaleDateString()}</td>
                 <td>{datetime.toLocaleTimeString()}</td>
                 <td>{entry.label}</td>
@@ -75,7 +84,7 @@ export default function Meals() {
           })}
           {entriesError && (
             <tr>
-              <td colSpan={5}>{entriesError}</td>
+              <td colSpan={columns}>{entriesError}</td>
             </tr>
           )}
         </tbody>

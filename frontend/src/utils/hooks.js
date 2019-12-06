@@ -2,7 +2,7 @@ import queryString from 'query-string';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 
-import { get} from './functions';
+import { get } from './functions';
 import { useStore } from '../components/Store';
 
 export function useInput(defaultValues = {}) {
@@ -17,26 +17,33 @@ export function useInput(defaultValues = {}) {
   return [values, handleChange, setValues];
 }
 
-export function useAuthentication() {
+export function useAuthentication(redirect) {
   const [user] = useStore(state => state.user);
   const history = useHistory();
 
   useEffect(() => {
     if (!user) {
-      history.push('/');
+      history.push(redirect);
     }
-  }, [user, history]);
+  }, [user, history, redirect]);
 }
 
-export function useAuthorization({ role } = {}) {
+const hasRole = (user, role) => user && user.roles.includes(role);
+
+export function useAuthorization(redirect, role) {
   const [user] = useStore(state => state.user);
   const history = useHistory();
 
   useEffect(() => {
-    if (user && !user.roles.includes(role)) {
-      history.push('/portal');
+    if (user && !hasRole(user, role)) {
+      history.push(redirect);
     }
-  }, [user, history, role]);
+  }, [user, history, role, redirect]);
+}
+
+export function useRole(role) {
+  const [user] = useStore(state => state.user);
+  return hasRole(user, role);
 }
 
 export function useResource(endpoint, dependencies = [], filters = null) {

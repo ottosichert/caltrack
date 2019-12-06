@@ -80,19 +80,21 @@ body {
   border-radius: 0;
 }
 
-.filter .pure-g input:first-of-type {
+.filter .pure-g .pure-u-1-3:first-of-type {
   border-top-left-radius: 4px;
 }
 
-.filter .pure-g input:nth-of-type(2) {
+.filter .pure-g .pure-u-1-3:nth-of-type(2) {
   border-top-right-radius: 4px;
 }
 
-.filter .pure-g input:nth-of-type(3) {
+.filter .pure-g .pure-u-1-3:nth-last-child(2),
+.filter .pure-g .pure-u-2-3:last-child {
   border-bottom-left-radius: 4px;
 }
 
-.filter .pure-g input:nth-of-type(4) {
+.filter .pure-g .pure-u-1-3:last-child,
+.filter .pure-g .pure-u-2-3:last-child {
   border-bottom-right-radius: 4px;
 }
 

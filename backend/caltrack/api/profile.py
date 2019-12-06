@@ -1,4 +1,4 @@
-from flask import current_app, g
+from flask import current_app
 from flask_restful import Resource, abort, fields, marshal_with, reqparse
 
 db = current_app.extensions['db']
@@ -22,12 +22,13 @@ class Profile(Resource):
     @marshal_with(profile_fields)
     @auth.login_required
     def get(self):
-        return g.user
+        return auth.get_current_user()
 
     @marshal_with(profile_fields)
     @auth.login_required
     def patch(self):
         args = profile_parser.parse_args(strict=True)
+        user = auth.get_current_user()
 
         # either both optional or both required
         if bool(args['old_password']) != bool(args['new_password']):
@@ -35,15 +36,15 @@ class Profile(Resource):
         # must be different passwords if new password requested
         elif args['new_password']:
             if args['old_password'] == args['new_password']:
-                current_app.logger.info(f'Trying to change to same password for {g.user}')
+                current_app.logger.info(f'Trying to change to same password for {user}')
                 return abort(400)
-            elif g.user.password != args['old_password']:
-                current_app.logger.info(f'Invalid password change request for {g.user}')
+            elif user.password != args['old_password']:
+                current_app.logger.info(f'Invalid password change request for {user}')
                 return abort(403)
 
-            g.user.password = args['new_password']
+            user.password = args['new_password']
 
-        g.user.daily_calories = args['daily_calories']
+        user.daily_calories = args['daily_calories']
         db.session.commit()
         return self.get()
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { toLocaleDateTime, toLocaleObject, json } from '../../utils/functions';
-import { useInput } from '../../utils/hooks';
+import { useInput, useRole } from '../../utils/hooks';
 
 export default function EditMeals({ endpoint, resource, reset, save } = {}) {
   const [values, handleChange, setValues] = useInput();
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const isAdmin = useRole('Admin');
 
   // load meal into edit form
   useEffect(() => {
@@ -42,6 +43,9 @@ export default function EditMeals({ endpoint, resource, reset, save } = {}) {
       label: values.label,
       datetime: toLocaleObject(values.date, values.time).toJSON(),
     };
+    if (isAdmin) {
+      utcValues.user_id = values.user_id;
+    }
     const response = await json(url, { method, body: JSON.stringify(utcValues) });
     setLoading(false);
     if (!response.ok) {
@@ -95,6 +99,17 @@ export default function EditMeals({ endpoint, resource, reset, save } = {}) {
           value={values.calories || ""}
           required
         />
+        {isAdmin && (
+          <input
+            type="number"
+            min={0}
+            className="pure-input-1"
+            name="user_id"
+            placeholder="User ID"
+            onChange={handleChange}
+            value={values.user_id || ""}
+          />
+        )}
       </fieldset>
 
       {resource ? (

@@ -5,9 +5,12 @@ import Meals from '../Meals';
 import Menu from '../Menu';
 import Profile from '../Profile';
 import Users from '../Users';
+import { useAuthentication } from '../../utils/hooks';
 
 export default function Portal() {
   const match = useRouteMatch();
+
+  useAuthentication('/');
 
   return (
     <Fragment>

@@ -19,11 +19,15 @@ auth_parser.add_argument('username', type=str, required=True)
 auth_parser.add_argument('password', type=str, required=True)
 
 
+def get_current_user():
+    return g.user
+
+
 def login_required(func):
     @functools.wraps(func)
     def wrapped_func(*args, **kwargs):
-        if g.user is None:
-            current_app.logger.info(f'Unauthenticated access attempt')
+        if get_current_user() is None:
+            current_app.logger.info('Unauthenticated access attempt')
             return abort(403)
         return func(*args, **kwargs)
     return wrapped_func
@@ -35,8 +39,9 @@ def roles_required(*roles):
         @functools.wraps(func)
         def wrapped_func(*args, **kwargs):
             for role in roles:
-                if not g.user.has_role(role):
-                    current_app.logger.info(f'Unauthorized access attempt from {g.user}')
+                user = get_current_user()
+                if not user.has_role(role):
+                    current_app.logger.info(f'Unauthorized access attempt from {user}')
                     return abort(403)
             return func(*args, **kwargs)
         return wrapped_func
@@ -49,8 +54,9 @@ def ownership_required(model):
         @functools.wraps(func)
         def wrapped_func(*args, id=None, **kwargs):
             resource = model.query.get(id)
-            if not g.user.has_role('Admin') and resource.user != g.user:
-                current_app.logger.info(f'Unowned access attempt from {g.user} to {resource}')
+            user = get_current_user()
+            if not user.has_role('Admin') and resource.user != user:
+                current_app.logger.info(f'Unowned access attempt from {user} to {resource}')
                 return abort(403)
             return func(*args, id=id, **kwargs)
         return wrapped_func

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { toLocaleObject } from '../../utils/functions';
-import { useInput } from '../../utils/hooks';
+import { useInput, useRole } from '../../utils/hooks';
 
 export default function FilterMeals({ update, loading } = {}) {
   const [values, handleChange, setValues] = useInput();
+  const isAdmin = useRole('Admin');
 
   const handleClick = event => {
     event.preventDefault();
@@ -28,7 +29,8 @@ export default function FilterMeals({ update, loading } = {}) {
     }
     update(newValues);
   };
-  const reset = () => {
+  const reset = event => {
+    event.preventDefault();
     update(null);
     setValues({});
   };
@@ -73,6 +75,21 @@ export default function FilterMeals({ update, loading } = {}) {
           onChange={handleChange}
           value={values.to_time || ""}
         />
+
+        {isAdmin && (
+          <Fragment>
+            <label className="pure-u-1-3">User ID</label>
+            <input
+              type="number"
+              min={0}
+              className="pure-u-2-3"
+              name="user_id"
+              placeholder="Find User ID in Users tab"
+              onChange={handleChange}
+              value={values.user_id || ""}
+            />
+          </Fragment>
+        )}
       </fieldset>
 
       <div className="pure-button-group pure-u-1">
