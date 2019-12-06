@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { toLocaleObject } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
 export default function FilterMeals({ update, loading } = {}) {
@@ -7,7 +8,20 @@ export default function FilterMeals({ update, loading } = {}) {
 
   const handleClick = event => {
     event.preventDefault();
-    update(values);
+
+    // filter out empty values
+    const newValues = Object.fromEntries(Object.entries(values).filter(([, value]) => value));
+    if (newValues.from_date) {
+      newValues.from_date = toLocaleObject(newValues.from_date).toJSON();
+    }
+    if (newValues.to_date) {
+      // filter by end of day to match user expectation
+      const endDate = toLocaleObject(newValues.to_date);
+      endDate.setDate(endDate.getDate() + 1);
+      endDate.setSeconds(endDate.getSeconds() - 1);
+      newValues.to_date = endDate.toJSON();
+    }
+    update(newValues);
   };
   const reset = () => {
     update(null);

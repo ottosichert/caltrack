@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { toLocaleDateTime, json } from '../../utils/functions';
+import { toLocaleDateTime, toLocaleObject, json } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
 export default function EditMeals({ endpoint, resource, reset, save } = {}) {
@@ -40,7 +40,7 @@ export default function EditMeals({ endpoint, resource, reset, save } = {}) {
     const utcValues = {
       calories: values.calories,
       label: values.label,
-      datetime: (new Date(`${values.date}T${values.time}:00`)).toJSON(),
+      datetime: toLocaleObject(values.date, values.time).toJSON(),
     };
     const response = await json(url, { method, body: JSON.stringify(utcValues) });
     setLoading(false);

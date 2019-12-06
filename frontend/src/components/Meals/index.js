@@ -48,7 +48,12 @@ export default function Meals() {
           )}
           {entries && entries.length === 0 && (
             <tr>
-              <td colSpan={5}>No meals submitted yet! Use the form above</td>
+              <td colSpan={5}>
+                {filters
+                  ? 'No entries found! Reset or adjust filters above'
+                  : 'No entries submitted yet! Use the form on top'
+                }
+              </td>
             </tr>
           )}
           {entries && entries.map(entry => {

@@ -76,6 +76,26 @@ body {
   margin: 0;
 }
 
+.filter .pure-g input {
+  border-radius: 0;
+}
+
+.filter .pure-g input:first-of-type {
+  border-top-left-radius: 4px;
+}
+
+.filter .pure-g input:nth-of-type(2) {
+  border-top-right-radius: 4px;
+}
+
+.filter .pure-g input:nth-of-type(3) {
+  border-bottom-left-radius: 4px;
+}
+
+.filter .pure-g input:nth-of-type(4) {
+  border-bottom-right-radius: 4px;
+}
+
 
 /* allow pure-menu-selected on <a> element itself to support <NavRouter> */
 .pure-menu-selected.pure-menu-link,
