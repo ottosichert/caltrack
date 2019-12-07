@@ -51,6 +51,10 @@ entry_fields = {
     'datetime': UtcDateTime(dt_format='iso8601'),
     'calories': fields.Integer,
 }
+list_fields = {
+    **entry_fields,
+    'calories_exceeded': fields.Boolean,
+}
 
 entry_parser = reqparse.RequestParser()
 entry_parser.add_argument('label', type=str, required=True)
@@ -79,26 +83,42 @@ filter_parser.add_argument(
 
 
 class EntryList(Resource):
-    @marshal_with(entry_fields)
+    @marshal_with(list_fields)
     @auth.login_required
     def get(self):
         args = filter_parser.parse_args()
-        query = models.Entry.query.filter_by(user=args['user'])
+        user_filter = (models.Entry.user == args['user'])
+        query = db.session.query(models.Entry).filter(user_filter)
+        offset = f"{-args['timezone_offset']} minutes"
+        time = db.func.time(models.Entry.datetime, offset)
+        date = db.func.date(models.Entry.datetime, offset)
 
         if args['from_date']:
             query = query.filter(models.Entry.datetime >= args['from_date'])
         if args['to_date']:
             query = query.filter(models.Entry.datetime <= args['to_date'])
         if args['from_time']:
-            query = query.filter(
-                db.func.time(models.Entry.datetime, f"{-args['timezone_offset']} minutes") >= str(args['from_time'])
-            )
+            query = query.filter(time >= str(args['from_time']))
         if args['to_time']:
-            query = query.filter(
-                db.func.time(models.Entry.datetime, f"{-args['timezone_offset']} minutes") <= str(args['to_time'])
-            )
+            query = query.filter(time <= str(args['to_time']))
 
-        return query.all()
+        visible_dates = db.session.query(date).filter(
+            models.Entry.id.in_(query.options(db.load_only('id')).subquery())
+        ).distinct().subquery()
+
+        calories_exceeded = db.session.query(
+            (db.func.sum(models.Entry.calories) > args['user'].daily_calories).label('calories_exceeded'),
+            date.label('date')
+        ).filter(user_filter, date.in_(visible_dates)).group_by(date).subquery()
+
+        query = query.join(calories_exceeded, date == calories_exceeded.c.date).with_entities(
+            models.Entry,
+            calories_exceeded.c.calories_exceeded
+        )
+        return [
+            {**entry.__dict__, 'calories_exceeded': entry_calories_exceeded}
+            for (entry, entry_calories_exceeded) in query.all()
+        ]
 
     @marshal_with(entry_fields)
     @auth.login_required

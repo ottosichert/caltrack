@@ -3,8 +3,8 @@ import React, { Fragment } from 'react';
 import { toLocaleObject } from '../../utils/functions';
 import { useInput, useRole } from '../../utils/hooks';
 
-export default function FilterMeals({ update, loading } = {}) {
-  const [values, handleChange, setValues] = useInput();
+export default function FilterMeals({ update, loading, defaults } = {}) {
+  const [values, handleChange, setValues] = useInput(defaults);
   const isAdmin = useRole('Admin');
 
   const handleClick = event => {
@@ -22,17 +22,12 @@ export default function FilterMeals({ update, loading } = {}) {
       endDate.setSeconds(endDate.getSeconds() - 1);
       newValues.to_date = endDate.toJSON();
     }
-    // let backend handle timezone aware filtering
-    if (newValues.from_time || newValues.to_time) {
-      const now = new Date();
-      newValues.timezone_offset = now.getTimezoneOffset();
-    }
     update(newValues);
   };
   const reset = event => {
     event.preventDefault();
-    update(null);
-    setValues({});
+    update(defaults);
+    setValues(defaults);
   };
 
   return (

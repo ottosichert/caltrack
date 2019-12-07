@@ -11,7 +11,9 @@ export default function Meals() {
 
   const endpoint = '/api/entries';
   const isAdmin = useRole('Admin');
-  const [filters, setFilters] = useState(null);
+  const timezoneOffset = (new Date()).getTimezoneOffset();
+  const defaultFilter = { timezone_offset: timezoneOffset };
+  const [filters, setFilters] = useState(defaultFilter);
   const [entries, entriesLoading, entriesError] = useResource(endpoint, [version], filters);
 
   const resetMeal = useCallback(() => setMeal(null), [setMeal]);
@@ -30,9 +32,9 @@ export default function Meals() {
   return (
     <Fragment>
       <Edit endpoint={endpoint} resource={meal} reset={resetMeal} save={incrementVersion} />
-      <Filters update={setFilters} loading={entriesLoading} />
+      <Filters update={setFilters} loading={entriesLoading} defaults={defaultFilter} />
 
-      <table className="pure-table pure-table-striped table">
+      <table className="pure-table table">
         <thead>
           <tr>
             {isAdmin && (
@@ -54,18 +56,13 @@ export default function Meals() {
           )}
           {entries && entries.length === 0 && (
             <tr>
-              <td colSpan={columns}>
-                {filters
-                  ? 'No entries found! Reset or adjust filters above'
-                  : 'No entries submitted yet! Use the form on top'
-                }
-              </td>
+              <td colSpan={columns}>No entries found! Adjust filters or submit entries above</td>
             </tr>
           )}
           {entries && entries.map(entry => {
             const datetime = new Date(entry.datetime);
             return (
-              <tr key={entry.id}>
+              <tr key={entry.id} className={entry.calories_exceeded ? 'exceed' : 'match'}>
                 {isAdmin && (
                   <td>{entry.user_id}</td>
                 )}

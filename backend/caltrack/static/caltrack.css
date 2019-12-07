@@ -53,6 +53,14 @@ body {
   margin: 0 auto 1rem;
 }
 
+.exceed {
+  background-color: #f001;
+}
+
+.match {
+  background-color: #0f01;
+}
+
 .filter {
   width: 50%;
   max-width: 30rem;
