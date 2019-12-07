@@ -2,4 +2,4 @@ from .base import BaseConfig
 
 
 class Config(BaseConfig):
-    pass
+    SESSION_COOKIE_SECURE = True

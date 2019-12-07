@@ -50,6 +50,7 @@ export function useResource(endpoint, dependencies = [], filters = null) {
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [, dispatch] = useStore(state => state.user);
 
   useEffect(
     () => {
@@ -58,6 +59,9 @@ export function useResource(endpoint, dependencies = [], filters = null) {
       setResource(null);
       (async () => {
         const response = await get(`${endpoint}${filters ? `?${queryString.stringify(filters)}` : ''}`);
+        if (response.status === 403) {
+          return dispatch({ type: 'logout' });
+        }
         setLoading(false);
         if (!response.ok) {
           return setError(`Error while loading ${endpoint.split('/').slice(-1)[0]}! Please reload page.`);
