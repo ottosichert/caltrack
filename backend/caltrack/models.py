@@ -33,8 +33,13 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     daily_calories = db.Column(db.Integer, server_default="2000", nullable=False)
 
-    meals = db.relationship('Entry', backref='user', lazy=True)
-    roles = db.relationship('Role', secondary=user_roles, lazy='subquery', backref=db.backref('users', lazy=True))
+    meals = db.relationship('Entry', backref='user', lazy=True, cascade='all,delete')
+    roles = db.relationship(
+        'Role',
+        secondary=user_roles,
+        lazy='subquery',
+        backref=db.backref('users', lazy=True, cascade='all,delete')
+    )
 
     def __init__(self, *args, password=None, **kwargs):
         if password:
