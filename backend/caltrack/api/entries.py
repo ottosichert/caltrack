@@ -117,7 +117,7 @@ class EntryList(Resource):
         )
         return [
             {**entry.__dict__, 'calories_exceeded': entry_calories_exceeded}
-            for (entry, entry_calories_exceeded) in query.all()
+            for (entry, entry_calories_exceeded) in query.order_by(models.Entry.datetime).all()
         ]
 
     @marshal_with(entry_fields)

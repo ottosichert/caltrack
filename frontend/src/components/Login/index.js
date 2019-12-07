@@ -49,7 +49,7 @@ export default function Login() {
 
       <form className="pure-form form" method="post">
         <fieldset className="pure-group" disabled={loading}>
-          <input className="pure-input-1" name="username" required placeholder="Username" onChange={handleChange} />
+          <input className="pure-input-1" name="username" required placeholder="Username" onChange={handleChange} autoFocus />
           <input className="pure-input-1" name="password" required placeholder="Password" onChange={handleChange} type="password" />
         </fieldset>
 
