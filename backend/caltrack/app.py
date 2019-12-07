@@ -19,8 +19,9 @@ def create_app(config=None):
 
         from . import db, models, api, cli  # noqa: F401
 
-    @app.route('/')
-    def index():
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def index(path=None):
         return render_template(f'{os.environ["FLASK_ENV"]}.html')
 
     return app

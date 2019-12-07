@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import Login from '../Login';
 import Portal from '../Portal';
@@ -8,7 +8,7 @@ import Store from '../Store';
 export default function App() {
   return (
     <Store>
-      <HashRouter>
+      <BrowserRouter>
         <Switch>
           <Route path="/portal">
             <Portal />
@@ -17,7 +17,7 @@ export default function App() {
             <Login />
           </Route>
         </Switch>
-      </HashRouter>
+      </BrowserRouter>
     </Store>
   );
 }

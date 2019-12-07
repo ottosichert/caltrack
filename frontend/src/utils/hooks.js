@@ -72,6 +72,7 @@ export function useResource(endpoint, dependencies = [], filters = null) {
     }, [
       endpoint,
       filters,
+      dispatch,
       ...dependencies, // eslint-disable-line react-hooks/exhaustive-deps
     ]);
 
