@@ -12,11 +12,11 @@
   "scripts": {
     "start": "BROWSER=none FORCE_COLOR=yes react-app-rewired start | cat",
     "build": "FORCE_COLOR=yes react-app-rewired build | cat",
-    "test": "FORCE_COLOR=yes react-app-rewired test | cat",
+    "test": "yarn test:integration",
     "eject": "FORCE_COLOR=yes react-app-rewired eject | cat",
     "test:cypress": "cypress open",
     "test:integration": "yarn build && concurrently --kill-others --success first \"../backend/scripts/integration.sh\" \"cypress run\"",
-    "test": "yarn test:integration"
+    "test:reset": "FLASK_APP=caltrack FLASK_ENV=production APP_ENV=integration ../backend/scripts/reset_db.sh integration"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "cypress": "^3.7.0",
+    "cypress-plugin-tab": "^1.0.4",
     "react-app-rewire-disable-chunks": "^0.0.1",
     "react-app-rewired": "^2.1.5"
   }
