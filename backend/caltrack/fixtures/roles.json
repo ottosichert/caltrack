@@ -1,0 +1,12 @@
+[
+  {
+    "model": "caltrack.models.Role",
+    "records": [{
+      "id": 1,
+      "name": "Manager"
+    }, {
+      "id": 2,
+      "name": "Admin"
+    }]
+  }
+]

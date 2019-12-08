@@ -2,4 +2,7 @@ from .base import BaseConfig
 
 
 class Config(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    pass
+
+
+raise NotImplementedError('Set up staging environment before starting')

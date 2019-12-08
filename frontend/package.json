@@ -15,7 +15,7 @@
     "test": "FORCE_COLOR=yes react-app-rewired test | cat",
     "eject": "FORCE_COLOR=yes react-app-rewired eject | cat",
     "test:cypress": "cypress open",
-    "test:integration": "yarn build && concurrently --kill-others \"../backend/scripts/staging.sh\" \"cypress run\"",
+    "test:integration": "yarn build && concurrently --kill-others --success first \"../backend/scripts/integration.sh\" \"cypress run\"",
     "test": "yarn test:integration"
   },
   "eslintConfig": {
