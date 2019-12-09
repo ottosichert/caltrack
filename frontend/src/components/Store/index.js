@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 
-const StoreContext = React.createContext({});
+export const StoreContext = React.createContext({});
 export const useStore = (selector = state => state) => {
   const [state, dispatch] = useContext(StoreContext);
   return [selector(state), dispatch];

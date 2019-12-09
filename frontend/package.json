@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
     "query-string": "^6.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -12,9 +14,10 @@
   "scripts": {
     "start": "BROWSER=none FORCE_COLOR=yes react-app-rewired start | cat",
     "build": "FORCE_COLOR=yes react-app-rewired build | cat",
-    "test": "yarn test:integration",
+    "test": "yarn test:unit && yarn test:integration",
     "eject": "FORCE_COLOR=yes react-app-rewired eject | cat",
     "test:cypress": "cypress open",
+    "test:unit": "FORCE_COLOR=yes react-app-rewired test | cat",
     "test:integration": "yarn build && concurrently --kill-others --success first \"../backend/scripts/integration.sh\" \"cypress run\"",
     "test:reset": "FLASK_APP=caltrack FLASK_ENV=production APP_ENV=integration ../backend/scripts/reset_db.sh integration"
   },
