@@ -59,7 +59,7 @@ list_fields = {
 entry_parser = reqparse.RequestParser()
 entry_parser.add_argument('label', type=str, required=True)
 entry_parser.add_argument('calories', type=int, required=True)
-entry_parser.add_argument('datetime', type=to_datetime, required=True)
+entry_parser.add_argument('datetime', type=to_datetime)
 entry_parser.add_argument(
     'user_id',
     type=to_authorized('Admin', lambda id: models.User.query.get(id), auth.get_current_user),

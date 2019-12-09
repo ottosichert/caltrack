@@ -16,7 +16,9 @@ def client():
 @pytest.fixture
 def login(client):
     @contextmanager
-    def context(user):
+    def context(user=None, username=None):
+        if not user:
+            user = client.application.extensions['models'].User.query.filter_by(username=username).one()
         with client.session_transaction() as session:
             session['user_id'] = user.id
         yield
