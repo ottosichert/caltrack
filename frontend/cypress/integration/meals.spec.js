@@ -30,6 +30,17 @@ describe('Meals', () => {
       cy.get('@table').contains('Glass of water');
     });
 
+    it('show background colors if calories were exceeded', () => {
+      cy.visit('/portal');
+      cy.get('.table').as('table').contains('Porridge').parent().should('have.class', 'match');
+      cy.get('@table').contains('Pasta').parent().should('have.class', 'exceed');
+
+      cy.visit('/portal/profile');
+      cy.get('input[name=daily_calories]').clear().type('2500{enter}');
+      cy.visit('/portal');
+      cy.get('@table').contains('Pasta').parent().should('have.class', 'match');
+    });
+
     it('can be created', () => {
       cy.visit('/portal');
       cy.get('input[name=date]').type('2019-12-04').tab();
