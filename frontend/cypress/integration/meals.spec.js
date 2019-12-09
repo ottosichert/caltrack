@@ -15,9 +15,14 @@ describe('Meals', () => {
 
     it('can be created', () => {
       cy.visit('/portal');
-      cy.get('input[name=label]').type('Beer').tab();
+      cy.get('input[name=date]').type('2019-12-04').tab();
+      cy.focused().type('22:00').tab();
+      cy.focused().type('Beer').tab();
       cy.focused().type('200{enter}');
-      cy.get('.table').contains('Beer').parent().contains('200');
+      cy.get('.table').contains('Beer').parent().as('row').contains('200');
+      const date = new Date('2019-12-04T22:00:00');
+      cy.get('@row').contains(date.toLocaleDateString());
+      cy.get('@row').contains(date.toLocaleTimeString());
     });
 
     it('can be edited', () => {
