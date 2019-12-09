@@ -14,7 +14,7 @@ export default function Meals() {
   const timezoneOffset = (new Date()).getTimezoneOffset();
   const defaultFilter = { timezone_offset: timezoneOffset };
   const [filters, setFilters] = useState(defaultFilter);
-  const [entries, entriesLoading, entriesError] = useResource(endpoint, [version], filters);
+  const [entries, entriesLoading, entriesError] = useResource(endpoint, [version], { filters });
 
   const resetMeal = useCallback(() => setMeal(null), [setMeal]);
   const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);

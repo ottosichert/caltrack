@@ -31,6 +31,16 @@
       "label": "Nachos",
       "calories": 700,
       "datetime": "2019-12-02T19:00:00.000Z"
+    }, {
+      "user_id": 2,
+      "label": "Business dinner",
+      "calories": 1200,
+      "datetime": "2019-12-03T20:00:00.000Z"
+    }, {
+      "user_id": 3,
+      "label": "Cappucino",
+      "calories": 100,
+      "datetime": "2019-12-03T08:00:00.000Z"
     }]
   }
 ]

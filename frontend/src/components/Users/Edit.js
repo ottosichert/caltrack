@@ -8,7 +8,7 @@ export default function EditUser({ endpoint, resource, reset, save } = {}) {
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [roles, rolesLoading, rolesError] = useResource('/api/roles', [resource]);
+  const [roles, rolesLoading, rolesError] = useResource('/api/roles', [resource], { role: 'Manager', redirect: '/portal' });
 
   // load user into edit form
   useEffect(() => {

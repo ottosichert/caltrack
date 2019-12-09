@@ -35,7 +35,7 @@ export function useAuthorization(redirect, role) {
   const history = useHistory();
 
   useEffect(() => {
-    if (user && !hasRole(user, role)) {
+    if (role && user && !hasRole(user, role)) {
       history.push(redirect);
     }
   }, [user, history, role, redirect]);
@@ -46,11 +46,12 @@ export function useRole(role) {
   return hasRole(user, role);
 }
 
-export function useResource(endpoint, dependencies = [], filters = null) {
+export function useResource(endpoint, dependencies = [], { filters = null, redirect = null, role = null } = {}) {
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [, dispatch] = useStore(state => state.user);
+  useAuthorization(redirect, role);
 
   useEffect(
     () => {
@@ -59,7 +60,7 @@ export function useResource(endpoint, dependencies = [], filters = null) {
       setResource(null);
       (async () => {
         const response = await get(`${endpoint}${filters ? `?${queryString.stringify(filters)}` : ''}`);
-        if (response.status === 403) {
+        if (!role && response.status === 403) {
           return dispatch({ type: 'logout' });
         }
         setLoading(false);
@@ -73,6 +74,7 @@ export function useResource(endpoint, dependencies = [], filters = null) {
       endpoint,
       filters,
       dispatch,
+      role,
       ...dependencies, // eslint-disable-line react-hooks/exhaustive-deps
     ]);
 

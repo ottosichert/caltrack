@@ -2,16 +2,14 @@ import React, { Fragment, useCallback, useState } from 'react';
 
 import Edit from './Edit';
 import { delete_ } from '../../utils/functions';
-import { useAuthorization, useResource } from '../../utils/hooks';
+import { useResource } from '../../utils/hooks';
 
 export default function Users() {
   const [version, setVersion] = useState(0);
   const [user, setUser] = useState(null);
 
-  useAuthorization('/portal', 'Manager');
-
   const endpoint = '/api/users';
-  const [users, usersLoading, usersError] = useResource(endpoint, [version]);
+  const [users, usersLoading, usersError] = useResource(endpoint, [version], { role: 'Manager', redirect: '/portal' });
 
   const resetUser = useCallback(() => setUser(null), [setUser]);
   const incrementVersion = useCallback(() => setVersion(version + 1), [setVersion, version]);
