@@ -13,6 +13,14 @@
       "id": 3,
       "username": "admin",
       "password": "admin"
+    }, {
+      "id": 4,
+      "username": "foo",
+      "password": "foo"
+    }, {
+      "id": 5,
+      "username": "bar",
+      "password": "bar"
     }]
   }, {
     "table": "user_roles",
