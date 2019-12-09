@@ -28,6 +28,11 @@
       "datetime": "2019-12-02T13:00:00.000Z"
     }, {
       "user_id": 1,
+      "label": "Glass of water",
+      "calories": 0,
+      "datetime": "2019-12-02T15:30:00.000Z"
+    }, {
+      "user_id": 1,
       "label": "Nachos",
       "calories": 700,
       "datetime": "2019-12-02T19:00:00.000Z"

@@ -8,9 +8,26 @@ describe('Meals', () => {
       cy.login('user', 'user');
     });
 
-    it('are shown on dashboard', () => {
+    it('are visible and filterable on dashboard', () => {
       cy.visit('/portal');
-      cy.get('.table').contains('Porridge');
+      cy.get('.table').as('table').contains('Porridge');
+      cy.get('@table').contains('Glass of water');
+
+      cy.get('input[name=from_date]').type('2019-12-02').tab();
+      cy.focused().type('2019-12-02');
+      cy.get('.filter').as('filter').submit();
+
+      cy.get('@table').contains('Porridge').should('not.exist');
+      cy.get('@table').contains('Glass of water');
+
+      cy.get('@filter').contains('Reset').click();
+      cy.get('input[name=from_time]').type('13:00').tab();
+      cy.focused().type('16:00');
+      cy.get('@filter').submit();
+
+      cy.get('@table').contains('Porridge').should('not.exist');
+      cy.get('@table').contains('Pizza');
+      cy.get('@table').contains('Glass of water');
     });
 
     it('can be created', () => {
