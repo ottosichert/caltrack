@@ -1,0 +1,36 @@
+[
+  {
+    "model": "caltrack.models.Entry",
+    "records": [{
+      "user_id": 1,
+      "label": "Porridge",
+      "calories": 500,
+      "datetime": "2019-12-01T07:00:00.000Z"
+    }, {
+      "user_id": 1,
+      "label": "Pizza",
+      "calories": 800,
+      "datetime": "2019-12-01T13:00:00.000Z"
+    }, {
+      "user_id": 1,
+      "label": "Steak",
+      "calories": 600,
+      "datetime": "2019-12-01T19:00:00.000Z"
+    }, {
+      "user_id": 1,
+      "label": "Bacon and eggs",
+      "calories": 700,
+      "datetime": "2019-12-02T07:00:00.000Z"
+    }, {
+      "user_id": 1,
+      "label": "Pasta",
+      "calories": 800,
+      "datetime": "2019-12-02T13:00:00.000Z"
+    }, {
+      "user_id": 1,
+      "label": "Nachos",
+      "calories": 700,
+      "datetime": "2019-12-02T19:00:00.000Z"
+    }]
+  }
+]

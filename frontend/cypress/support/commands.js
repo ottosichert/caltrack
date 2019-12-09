@@ -27,3 +27,14 @@
 Cypress.Commands.add('resetDb', () => {
   cy.exec('yarn test:reset');
 });
+
+Cypress.Commands.add('login', (username, password) => {
+  cy.request({
+    method: 'post',
+    url: '/api/auth/login',
+    body: { username, password }
+  }).then(json => {
+    localStorage.setItem('caltrack', JSON.stringify({ user: json.body }));
+  });
+  Cypress.Cookies.preserveOnce('session');
+});

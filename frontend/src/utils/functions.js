@@ -1,8 +1,9 @@
-export const json = (url, options) => fetch(url, {
+export const json = (url, { method = 'get', ...options } = {}) => fetch(url, {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   },
+  method: method.toUpperCase(),
   ...options,
 });
 
