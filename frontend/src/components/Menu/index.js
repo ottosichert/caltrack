@@ -36,7 +36,7 @@ export default function Menu() {
           <li className="pure-menu-item pure-menu-disabled user">Welcome, {user.username}</li>
         )}
         <li className="pure-menu-item">
-          <Link to="" className="pure-menu-link logout" onClick={handleClick}>Log out</Link>
+          <Link to="" role="button" className="pure-menu-link logout" onClick={handleClick}>Log out</Link>
         </li>
       </ul>
     </div>
