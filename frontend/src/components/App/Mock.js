@@ -2,19 +2,18 @@ import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Router } from "react-router-dom";
 
-import { StoreContext } from '../Store';
+import StoreMock from '../Store/Mock';
 
 export default function AppMock({
-  state = {},
-  dispatch = () => {},
   children,
-  history = createMemoryHistory()
+  history = createMemoryHistory(),
+  ...props
 } = {}) {
   return (
     <Router history={history}>
-      <StoreContext.Provider value={[state, dispatch]}>
+      <StoreMock {...props}>
         {children}
-      </StoreContext.Provider>
+      </StoreMock>
     </Router>
   )
 }
