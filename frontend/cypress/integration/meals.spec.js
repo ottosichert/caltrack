@@ -20,7 +20,7 @@ describe('Meals', () => {
       cy.get('@table').contains('Porridge').should('not.exist');
       cy.get('@table').contains('Glass of water');
 
-      cy.get('@filter').contains('Reset').click();
+      cy.get('@filter').contains('Reset').click().should('be.enabled');
       cy.get('input[name=from_time]').type('13:00').tab();
       cy.focused().type('16:00');
       cy.get('@filter').submit();
@@ -36,7 +36,7 @@ describe('Meals', () => {
       cy.get('@table').contains('Pasta').parent().should('have.class', 'exceed');
 
       cy.visit('/portal/profile');
-      cy.get('input[name=daily_calories]').clear().type('2500{enter}');
+      cy.get('input[name=daily_calories]').should('be.enabled').clear().type('2500{enter}');
       cy.visit('/portal');
       cy.get('@table').contains('Pasta').parent().should('have.class', 'match');
     });
@@ -86,7 +86,7 @@ describe('Meals', () => {
       cy.visit('/portal');
       cy.get('input[name=label]').type('Business breakfast').tab();
       cy.focused().type('900').tab();
-      cy.focused().type('2{enter}');
+      cy.focused().type('2{enter}').should('be.enabled');
 
       cy.get('.filter input[name=user_id]').should('be.enabled').type('2{enter}');
       cy.get('.table').contains('Business breakfast');

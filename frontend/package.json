@@ -17,7 +17,7 @@
     "test": "yarn test:unit && yarn test:integration",
     "eject": "FORCE_COLOR=yes react-app-rewired eject | cat",
     "test:cypress": "cypress open",
-    "test:unit": "FORCE_COLOR=yes react-app-rewired test | cat",
+    "test:unit": "CI=true FORCE_COLOR=yes react-app-rewired test | cat",
     "test:integration": "yarn build && concurrently --kill-others --success first \"../backend/scripts/integration.sh\" \"cypress run\"",
     "test:reset": "FLASK_APP=caltrack FLASK_ENV=production APP_ENV=integration ../backend/scripts/reset_db.sh integration"
   },
@@ -37,6 +37,7 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^5.0.1",
     "cypress": "^3.7.0",
     "cypress-plugin-tab": "^1.0.4",
     "object.fromentries": "^2.0.1",

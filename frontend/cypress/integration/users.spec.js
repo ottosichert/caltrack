@@ -14,7 +14,7 @@ describe('Users', () => {
 
   it('can be created', () => {
     cy.visit('/portal/users');
-    cy.get('input[name=username]').type('dummy').tab();
+    cy.get('input[name=username]').should('be.enabled').type('dummy').tab();
     cy.focused().type('dummy{enter}');
 
     cy.get('.table').contains('dummy');
