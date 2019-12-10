@@ -8,6 +8,8 @@ db = current_app.extensions['db']
 
 
 class Opaque:
+    """Allow comparing sensitive values (e.g. password) in code without revealing"""
+
     def __init__(self, model, attribute, validator):
         self.model = model
         self.attribute = attribute
@@ -20,6 +22,7 @@ class Opaque:
         return not self.__eq__(other)
 
 
+# role membership for users is persisted in this many-to-many relation
 user_roles = db.Table(
     'user_roles',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
@@ -28,6 +31,8 @@ user_roles = db.Table(
 
 
 class User(db.Model):
+    """Stores both credentials and profile information and handles `password` attribute intransparently"""
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
@@ -57,6 +62,8 @@ class User(db.Model):
 
     @property
     def password(self):
+        """Shadow sensitive `password` attribute"""
+
         return Opaque(self, 'password_hash', check_password_hash)
 
     @password.setter
@@ -65,6 +72,8 @@ class User(db.Model):
 
 
 class Role(db.Model):
+    """The app uses special values `Manager` and `Admin` as roles"""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), index=True, unique=True, nullable=False)
 
@@ -73,6 +82,8 @@ class Role(db.Model):
 
 
 class Entry(db.Model):
+    """Meal/Entry storing all data for each item"""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     label = db.Column(db.String(255), index=True, nullable=False)

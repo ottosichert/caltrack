@@ -15,6 +15,8 @@ def client():
 
 @pytest.fixture
 def login(client):
+    """Convenience helper to simulate logged in application state"""
+
     @contextmanager
     def context(user=None, username=None):
         if not user:

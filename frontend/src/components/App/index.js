@@ -5,6 +5,7 @@ import Login from '../Login';
 import Portal from '../Portal';
 import Store from '../Store';
 
+// provide all root components and set initial route entry point
 export default function App() {
   return (
     <Store>

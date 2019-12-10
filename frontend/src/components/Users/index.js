@@ -4,6 +4,7 @@ import Edit from './Edit';
 import { delete_ } from '../../utils/functions';
 import { useResource } from '../../utils/hooks';
 
+// show editable list of users to role `Manager` only
 export default function Users() {
   const [version, setVersion] = useState(0);
   const [user, setUser] = useState(null);

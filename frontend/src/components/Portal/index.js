@@ -7,6 +7,7 @@ import Profile from '../Profile';
 import Users from '../Users';
 import { useAuthentication } from '../../utils/hooks';
 
+// sub-routes for all authenticated pages
 export default function Portal() {
   const match = useRouteMatch();
 

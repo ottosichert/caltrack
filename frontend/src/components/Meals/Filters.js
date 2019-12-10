@@ -3,6 +3,7 @@ import React, { Fragment } from 'react';
 import { toLocaleObject } from '../../utils/functions';
 import { useInput, useRole } from '../../utils/hooks';
 
+// component storing form to filter entries based on dates or times
 export default function FilterMeals({ update, loading, defaults } = {}) {
   const [values, handleChange, setValues] = useInput(defaults);
   const isAdmin = useRole('Admin');

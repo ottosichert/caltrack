@@ -37,11 +37,15 @@ class UserList(Resource):
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
     def get(self):
+        """Retrieves the full list of users from the database"""
+
         return models.User.query.all()
 
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
     def post(self):
+        """Restricted endpoint which returns 403 FORBIDDEN on duplication"""
+
         args = create_parser.parse_args(strict=True)
         user = models.User(**args)
         db.session.add(user)
@@ -59,6 +63,8 @@ class User(Resource):
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
     def patch(self, id=None):
+        """Ignore empty fields as password is optional"""
+
         args = update_parser.parse_args(strict=True)
         user = models.User.query.get(id)
         for key, value in args.items():
@@ -70,6 +76,8 @@ class User(Resource):
     @marshal_with(user_fields)
     @auth.roles_required("Manager")
     def delete(self, id=None):
+        """Deleting a user will cascade delete all its entries and user_roles"""
+
         user = models.User.query.get(id)
         db.session.delete(user)
         db.session.commit()
@@ -79,6 +87,8 @@ class RoleList(Resource):
     @marshal_with(role_fields)
     @auth.roles_required("Manager")
     def get(self):
+        """Retrieves the full list of roles from the database"""
+
         return models.Role.query.all()
 
 

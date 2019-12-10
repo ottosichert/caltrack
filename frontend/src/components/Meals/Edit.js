@@ -38,11 +38,15 @@ export default function EditMeals({ endpoint, resource, reset, save } = {}) {
     setLoading(true);
     const url = event.target.formAction;
     const method = event.target.dataset.formmethod;
+
+    // omit additional fields from retrieval
     const utcValues = {
       calories: values.calories,
       label: values.label,
       datetime: toLocaleObject(values.date, values.time).toJSON(),
     };
+
+    // user_id can be set as admin only and will be `null` otherwise
     if (isAdmin) {
       utcValues.user_id = values.user_id;
     }

@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { get } from './functions';
 import { useStore } from '../components/Store';
 
+// dynamically store input value based on `name` attribute
 export function useInput(defaultValues = {}) {
   const [values, setValues] = useState(defaultValues);
   const handleChange = useCallback(event => {
@@ -17,6 +18,7 @@ export function useInput(defaultValues = {}) {
   return [values, handleChange, setValues];
 }
 
+// redirect of user is not logged in
 export function useAuthentication(redirect) {
   const [user] = useStore(state => state.user);
   const history = useHistory();
@@ -30,6 +32,7 @@ export function useAuthentication(redirect) {
 
 const hasRole = (user, role) => user && user.roles.includes(role);
 
+// redirect of user is not authorized
 export function useAuthorization(redirect, role) {
   const [user] = useStore(state => state.user);
   const history = useHistory();
@@ -46,6 +49,7 @@ export function useRole(role) {
   return hasRole(user, role);
 }
 
+// sync resource with provided filters and reload when any dependencies change
 export function useResource(endpoint, dependencies = [], { filters = null, redirect = null, role = null } = {}) {
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,9 +64,12 @@ export function useResource(endpoint, dependencies = [], { filters = null, redir
       setResource(null);
       (async () => {
         const response = await get(`${endpoint}${filters ? `?${queryString.stringify(filters)}` : ''}`);
+
+        // only log out user if authentication fails, not authorization
         if (!role && response.status === 403) {
           return dispatch({ type: 'logout' });
         }
+
         setLoading(false);
         if (!response.ok) {
           return setError(`Error while loading ${endpoint.split('/').slice(-1)[0]}! Please reload page.`);

@@ -4,15 +4,18 @@ import { Link, useHistory } from "react-router-dom";
 import { patch } from '../../utils/functions';
 import { useInput, useResource } from '../../utils/hooks';
 
+// allow changes to the current user profile and credentials
 export default function Profile() {
   const [values, handleChange, setValues] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const history = useHistory();
 
+  // retrieve current values before updating
   const endpoint = "/api/profile";
   const [profile, profileLoading, profileError] = useResource(endpoint);
 
+  // load retrieved values into form
   useEffect(() => {
     setValues(profile || {});
   }, [setValues, profile]);
@@ -32,6 +35,7 @@ export default function Profile() {
     })();
   };
 
+  // only require password fields once any value was entered
   const changingPassword = Boolean(values.old_password || values.new_password);
   const disabled = loading || profileLoading || profileError;
 

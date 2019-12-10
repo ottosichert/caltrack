@@ -7,6 +7,7 @@ export const json = (url, { method = 'get', ...options } = {}) => fetch(url, {
   ...options,
 });
 
+// convenience helpers for each HTTP method
 const factory = method => (url, options) => json(url, { method, ...options });
 export const patch = factory('patch');
 export const post = factory('post');

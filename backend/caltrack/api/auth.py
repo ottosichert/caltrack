@@ -24,6 +24,8 @@ def get_current_user():
 
 
 def login_required(func):
+    """Requires an authenticated session"""
+
     @functools.wraps(func)
     def wrapped_func(*args, **kwargs):
         if get_current_user() is None:
@@ -34,6 +36,8 @@ def login_required(func):
 
 
 def roles_required(*roles):
+    """Requires an authenticated session and role membership of current user"""
+
     def wrapper(func):
         @login_required
         @functools.wraps(func)
@@ -49,6 +53,8 @@ def roles_required(*roles):
 
 
 def ownership_required(model):
+    """Given a model, the current user must be set as the `user` attribute for the given `id` parameter"""
+
     def wrapper(func):
         @login_required
         @functools.wraps(func)
@@ -65,6 +71,8 @@ def ownership_required(model):
 
 @current_app.before_request
 def load_logged_in_user():
+    """Set global user object in request context"""
+
     user_id = session.get(Authentication.USER_SESSION_KEY)
 
     if user_id is None:
@@ -77,6 +85,8 @@ class Authentication(Resource):
     USER_SESSION_KEY = 'user_id'
 
     def register(self):
+        """Attempt to create user and login at the same time"""
+
         args = auth_parser.parse_args(strict=True)
         user = models.User(**args)
         db.session.add(user)
@@ -92,6 +102,8 @@ class Authentication(Resource):
 
     @marshal_with(auth_fields)
     def login(self):
+        """Validate credentials and save user in current session"""
+
         args = auth_parser.parse_args(strict=True)
         user = models.User.query.filter_by(username=args['username']).first()
 
@@ -107,10 +119,14 @@ class Authentication(Resource):
 
     @login_required
     def logout(self):
+        """Logging out is performed simply by deleting the user in the session"""
+
         del session[self.USER_SESSION_KEY]
         return {}
 
     def post(self, action):
+        """Dynamically forward action based on parameter"""
+
         return getattr(self, action)()
 
 

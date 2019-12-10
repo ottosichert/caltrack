@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { json } from '../../utils/functions';
 import { useInput, useResource } from '../../utils/hooks';
 
+// similar to <EditMeals> provide a single form for both creation and modification
 export default function EditUser({ endpoint, resource, reset, save } = {}) {
   const [values, handleChange, setValues] = useInput();
   const [version, setVersion] = useState(0);

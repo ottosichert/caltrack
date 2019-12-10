@@ -22,11 +22,15 @@ class Profile(Resource):
     @marshal_with(profile_fields)
     @auth.login_required
     def get(self):
+        """Retrieve user saved in session object"""
+
         return auth.get_current_user()
 
     @marshal_with(profile_fields)
     @auth.login_required
     def patch(self):
+        """Perform mutations on user profile in user model"""
+
         args = profile_parser.parse_args(strict=True)
         user = auth.get_current_user()
 

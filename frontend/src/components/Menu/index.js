@@ -5,6 +5,7 @@ import { useStore } from '../Store';
 import { post } from '../../utils/functions';
 import { useRole } from '../../utils/hooks';
 
+// menu will be shown in portal area and provides logout functionality
 export default function Menu() {
   const [user, dispatch] = useStore(state => state.user);
   const isManager = useRole('Manager');

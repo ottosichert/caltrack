@@ -11,11 +11,15 @@ auth = current_app.extensions['auth']
 
 
 class UtcDateTime(fields.DateTime):
+    """Given UTC datetime strings, ensure the UTC timezone is actually set"""
+
     def format(self, value):
         return super(UtcDateTime, self).format(value.replace(tzinfo=timezone.utc))
 
 
 class AuthorizedInteger(fields.Integer):
+    """Protect an integer field with a role"""
+
     def __init__(self, role, *args, **kwargs):
         self.role = role
         super(AuthorizedInteger, self).__init__(*args, **kwargs)
@@ -35,6 +39,8 @@ def to_time(value):
 
 
 def to_authorized(role, sub_type, default):
+    """Wrapper to provide default value if role authorization fails"""
+
     def authorized_type(*args, **kwargs):
         user = auth.get_current_user()
         if user.has_role(role):
@@ -86,6 +92,8 @@ class EntryList(Resource):
     @marshal_with(list_fields)
     @auth.login_required
     def get(self):
+        """Perform time filtering in this controller as all datetimes are stored in UTC"""
+
         args = filter_parser.parse_args()
         user_filter = (models.Entry.user == args['user'])
         query = db.session.query(models.Entry).filter(user_filter)
@@ -102,6 +110,7 @@ class EntryList(Resource):
         if args['to_time']:
             query = query.filter(time <= str(args['to_time']))
 
+        # construct subqueries to annotate each row with daily calories exceeded or not
         visible_dates = db.session.query(date).filter(
             models.Entry.id.in_(query.options(db.load_only('id')).subquery())
         ).distinct().subquery()
@@ -115,6 +124,8 @@ class EntryList(Resource):
             models.Entry,
             calories_exceeded.c.calories_exceeded
         )
+
+        # manually create dict for serialization as a shortcut to avoid creating a SQLAlchemy mapper
         return [
             {**entry.__dict__, 'calories_exceeded': entry_calories_exceeded}
             for (entry, entry_calories_exceeded) in query.order_by(models.Entry.datetime).all()
@@ -123,6 +134,8 @@ class EntryList(Resource):
     @marshal_with(entry_fields)
     @auth.login_required
     def post(self):
+        """Simply create an entry with validate arguments from parser"""
+
         args = entry_parser.parse_args(strict=True)
         entry = models.Entry(**args)
         db.session.add(entry)
@@ -135,6 +148,8 @@ class Entry(Resource):
     @marshal_with(entry_fields)
     @auth.ownership_required(models.Entry)
     def patch(self, id=None):
+        """Ignore empty fields as user_id can be None on failed role authorization"""
+
         args = entry_parser.parse_args(strict=True)
         entry = models.Entry.query.get(id)
         for key, value in args.items():
@@ -146,6 +161,8 @@ class Entry(Resource):
     @marshal_with(entry_fields)
     @auth.ownership_required(models.Entry)
     def delete(self, id=None):
+        """Perform delete operation as confirmation is required in client application"""
+
         entry = models.Entry.query.get(id)
         db.session.delete(entry)
         db.session.commit()

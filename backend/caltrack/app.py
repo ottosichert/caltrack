@@ -22,6 +22,8 @@ def create_app(config=None):
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def index(path=None):
+        """Catch-all route to let SPA handle routing"""
+
         return render_template(f'{os.environ["FLASK_ENV"]}.html')
 
     return app

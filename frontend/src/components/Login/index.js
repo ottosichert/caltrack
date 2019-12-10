@@ -5,6 +5,7 @@ import { useStore } from '../Store';
 import { post } from '../../utils/functions';
 import { useInput } from '../../utils/hooks';
 
+// initial screen to provide login and registration functionality
 export default function Login() {
   const [values, handleChange] = useInput();
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function Login() {
   const [user, dispatch] = useStore(state => state.user);
   const history = useHistory();
 
+  // forward to portal if already logged in locally
   useEffect(() => {
     if (user) {
       history.push('/portal');
@@ -28,6 +30,7 @@ export default function Login() {
     setLoading(true);
     setError("");
 
+    // select login or registration endpoint based on button which was clicked
     const endpoint = event.target.formAction;
     const display = event.target.textContent;
 
